@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs, watch } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 
 import type { facetType } from "../custom_types";
 
@@ -18,6 +18,13 @@ const filteredItems = ref([...items.value]);
 const searchValue = ref("");
 const input = ref();
 const showList = ref(false);
+const dropdown = ref(null);
+
+const emptyList = computed(() => {
+  return filteredItems.value.length === 0;
+});
+
+const emptySearch = computed(() => searchValue.value === "");
 
 watch(items, () => {
   console.log("updated items watch : ", items.value);
@@ -32,6 +39,7 @@ watch(searchValue, (search) => {
     v.name.toLowerCase().includes(search.toLowerCase())
   );
 });
+
 function choseListElement(e: string) {
   console.log(e);
   searchValue.value = e;
@@ -51,21 +59,48 @@ function toggleShowList(show: boolean) {
 
 <template>
   <div class="choice">
-    <input
-      class="w-48 text-slate-800 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block rounded-md sm:text-sm focus:ring-1 invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 disabled:shadow-none transition-all"
-      type="text"
-      placeholder="ville"
-      v-model="searchValue"
-      @focus="toggleShowList(true)"
-      @blur="toggleShowList(false)"
-      @keydown.enter="choseListElement(firstItem())"
-      ref="input"
-    />
+    <div class="flex flex-row justify-start items-center">
+      <input
+        class="w-44 h-9 text-slate-800 px-3 py-2 bg-white placeholder-slate-400 disabled:bg-slate-50 disabled:text-slate-500 block rounded-tl-xl rounded-bl-xl sm:text-sm invalid:border-pink-500 invalid:text-pink-600 disabled:shadow-none focus:outline-none transition-all z-10"
+        :class="{ 'rounded-xl delay-75': emptySearch }"
+        type="text"
+        placeholder="ville"
+        v-model="searchValue"
+        @focus="toggleShowList(true)"
+        @blur="toggleShowList(false)"
+        @keydown.enter="choseListElement(firstItem())"
+        ref="input"
+      />
+      <div
+        class="h-9 w-0 -ml-1 rounded-tr-xl rounded-br-xl bg-slate-200 flex justify-center items-center transition-all"
+        :class="{ 'w-9': !emptySearch }"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 ml-1 text-slate-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </div>
+    </div>
     <div
-      class="choices rounded h-0 w-48 mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all"
-      :class="{ 'h-48': showList }"
+      class="choices rounded-xl h-0 w-44 mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all"
+      :class="{
+        'h-48': showList,
+        'h-fit': emptyList && showList,
+      }"
+      ref="dropdown"
     >
       <ul>
+        <p class="text-center m-1" v-if="emptyList">Aucun résultat.</p>
         <li
           class="rounded m-1 p-2 hover:bg-emerald-300/[.3]"
           v-for="(v, ind) in filteredItems"
