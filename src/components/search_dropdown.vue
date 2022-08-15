@@ -55,6 +55,10 @@ function toggleShowList(show: boolean) {
   if (!show) input.value.blur();
   showList.value = show;
 }
+
+function clearSearch() {
+  searchValue.value = "";
+}
 </script>
 
 <template>
@@ -77,7 +81,8 @@ function toggleShowList(show: boolean) {
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 ml-1 text-slate-500"
+          class="h-6 w-6 ml-1 text-slate-500 hover:cursor-pointer"
+          @click="clearSearch"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
