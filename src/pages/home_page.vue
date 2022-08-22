@@ -1,69 +1,65 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 
-import axios from "axios";
+import { useVillesStore } from "@/stores/villes";
+import { useCarburantStore } from "@/stores/carburant";
+import { useStationStore } from "@/stores/stations";
+import SearchDropDown from "@/components/search_dropdown.vue";
 
-import type { facetType } from "../custom_types";
-import SearchDropDown from "../components/search_dropdown.vue";
+// VILLES *********
 
-const api_url =
-  "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&facet=ville&facet=prix_nom&facet=adresse";
+const villeStore = useVillesStore();
+const { items: villes } = storeToRefs(villeStore);
 
-// url par ville : https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&refine.ville=PARIS
-
-const config = {
-  // headers: {
-  //   "Access-Control-Allow-Origin": "*",
-  // },
-};
-
-const data = ref();
+villeStore
+  .fetchVilles()
+  .then(() => console.log("villes found : ", villeStore.items));
 
 const refineVille = ref("");
-
-const villes = computed<facetType[]>(() => {
-  if (data.value) {
-    const v = data.value["facet_groups"].find(
-      (element: { name: string }) => element.name === "ville"
-    ).facets;
-    console.log("computed villes ", v);
-    return v;
-  }
-  return [] as facetType[];
-});
-
 watch(refineVille, () =>
   console.log("updated refine ville value : ", refineVille.value)
 );
 
-// const carburants = ref<facetType[]>();
-// const adresses = ref<facetType[]>();
+// CARBURANTS *********
 
-axios
-  .get(api_url, config)
-  .then((result) => {
-    console.log("result : ", result.data);
-    data.value = result.data;
+const carburantStore = useCarburantStore();
+const { items: carburants } = storeToRefs(carburantStore);
 
-    // villes.value = result.data["facet_groups"].find(
-    //   (element: { name: string }) => element.name === "ville"
-    // ).facets;
+carburantStore
+  .fetchVilles()
+  .then(() => console.log("carburants found : ", carburantStore.items));
 
-    // carburants.value = result.data["facet_groups"].find(
-    //   (element: { name: string }) => element.name === "prix_nom"
-    // ).facets;
+const refineCarburant = ref("");
+watch(refineCarburant, () =>
+  console.log("updated refine ville value : ", refineVille.value)
+);
 
-    // adresses.value = result.data["facet_groups"].find(
-    //   (element: { name: string }) => element.name === "adresse"
-    // ).facets;
-  })
-  .catch((err) => {
-    console.error("error : ", err);
-  });
+// STATIONS *********
+
+const stationStore = useStationStore();
+
+stationStore
+  .fetchStations("PARIS")
+  .then(() => console.log("fetched stations for Paris : ", stationStore.items));
 </script>
 
 <template>
-  <div class="flex-col -w-3 m-3">
-    <SearchDropDown :items="villes" v-model="refineVille" />
+  <div class="home w-full">
+    <div class="line flex justify-evenly p-32">
+      <SearchDropDown
+        class="w-[25%]"
+        name="Ville"
+        :items="villes"
+        v-model="refineVille"
+        required
+      />
+      <SearchDropDown
+        class="w-[25%]"
+        name="Carburant"
+        :items="carburants"
+        v-model="refineCarburant"
+      />
+    </div>
   </div>
 </template>
