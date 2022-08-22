@@ -56,7 +56,7 @@ function choseListElement(e: string) {
 }
 
 function firstItem() {
-  return filteredItems.value[0].name ?? "";
+  return filteredItems.value[0]?.name ?? items.value[0].name;
 }
 
 function toggleShowList(show: boolean, chosenItem = false) {
