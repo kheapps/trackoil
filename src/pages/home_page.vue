@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useVillesStore } from "@/stores/villes";
@@ -22,9 +22,9 @@ villeStore.fetchVilles().then(() => {
 });
 
 const refineVille = ref(defaultVille);
-watch(refineVille, () =>
-  console.log("updated refine ville value : ", refineVille.value)
-);
+// watch(refineVille, () =>
+//   console.log("updated refine ville value : ", refineVille.value)
+// );
 
 // CARBURANTS *********
 
@@ -36,9 +36,9 @@ carburantStore
   .then(() => console.log("carburants found : ", carburantStore.items));
 
 const refineCarburant = ref("");
-watch(refineCarburant, () =>
-  console.log("updated refine carburant value : ", refineCarburant.value)
-);
+// watch(refineCarburant, () =>
+//   console.log("updated refine carburant value : ", refineCarburant.value)
+// );
 
 // STATIONS *********
 
@@ -50,11 +50,10 @@ stationStore.fetchStations(defaultVille).then(() => {
 });
 
 const stations = computed(() => {
-  // const st = stationStore.items.find(
-  //   (group) => group.ville === refineVille.value
-  // )?.stations;
+  if (refineVille.value === "") return [];
   const st = stationStore.getStationsByVille(refineVille.value);
   console.log("station computed value ", st);
+  if (!st) stationStore.fetchStations(refineVille.value);
   return st;
 });
 </script>

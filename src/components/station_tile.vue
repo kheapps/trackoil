@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, toRefs } from "vue";
 
+import { MapPinIcon } from "@heroicons/vue/24/outline";
+
 import type { Station } from "@/custom_types";
 import { useCarburantStore } from "@/stores/carburant";
 
@@ -31,13 +33,15 @@ function carburantPrice(c: string) {
         :key="carburant.name"
       >
         <h1>{{ carburant.name }}</h1>
-        <p class="mt-3">{{ carburantPrice(carburant.name) }}</p>
+        <p class="mt-3">{{ carburantPrice(carburant.name) ?? "-.---" }}</p>
       </div>
     </div>
     <div
-      class="address max-w-[200px] w-[200px] bg-orange-900 px-2 ml-5 flex justify-center items-center"
+      class="address max-w-[200px] w-[200px] bg-orange-900 ml-5 flex justify-center items-center"
     >
-      <span class="">icon</span>
+      <span class="w-7 h-7">
+        <MapPinIcon></MapPinIcon>
+      </span>
       <h1 class="text-center ml-3">Station</h1>
     </div>
   </div>
