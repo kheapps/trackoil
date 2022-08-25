@@ -3,24 +3,24 @@ import { computed, ref, toRefs, watch } from "vue";
 
 import { onClickOutside } from "@vueuse/core";
 
-import type { Facet } from "../custom_types";
+import type { ApiFacet } from "../custom_types";
 
 const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
-  items: { type: Array<Facet>, default: new Array<Facet>() },
+  items: { type: Array<ApiFacet>, default: new Array<ApiFacet>() },
   modelValue: String,
   name: String,
   required: { type: Boolean, default: false },
 });
 
-const { items, name, required } = toRefs(props);
+const { items, name, required, modelValue } = toRefs(props);
 
 console.log("search ", name?.value, required.value);
 
 const filteredItems = ref([...items.value]);
 
-const searchValue = ref("");
+const searchValue = ref(modelValue?.value ?? "");
 const dropdownRef = ref();
 const input = ref();
 const showList = ref(false);
@@ -36,7 +36,8 @@ const emptySearch = computed(() => searchValue.value === "");
 watch(items, () => {
   console.log("updated items watch : ", items.value);
   filteredItems.value = [...items.value];
-  if (required.value) searchValue.value = items.value[0].name;
+  if (required.value && searchValue.value === "")
+    searchValue.value = items.value[0].name;
 });
 
 watch(searchValue, (search) => {
@@ -69,6 +70,7 @@ function toggleShowList(show: boolean, chosenItem = false) {
 
 function clearSearch() {
   searchValue.value = "";
+  emit("update:modelValue", "");
   if (required.value) input.value.focus();
 }
 

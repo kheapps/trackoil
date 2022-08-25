@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useVillesStore } from "@/stores/villes";
 import { useCarburantStore } from "@/stores/carburant";
 import { useStationStore } from "@/stores/stations";
+
 import SearchDropDown from "@/components/search_dropdown.vue";
+import StationTile from "../components/station_tile.vue";
+
+const defaultVille = "Paris";
+const isLoadingStations = ref(false);
 
 // VILLES *********
 
 const villeStore = useVillesStore();
 const { items: villes } = storeToRefs(villeStore);
 
-villeStore
-  .fetchVilles()
-  .then(() => console.log("villes found : ", villeStore.items));
+villeStore.fetchVilles().then(() => {
+  console.log("villes found : ", villeStore.items);
+});
 
-const refineVille = ref("");
+const refineVille = ref(defaultVille);
 watch(refineVille, () =>
   console.log("updated refine ville value : ", refineVille.value)
 );
@@ -32,21 +37,31 @@ carburantStore
 
 const refineCarburant = ref("");
 watch(refineCarburant, () =>
-  console.log("updated refine ville value : ", refineVille.value)
+  console.log("updated refine carburant value : ", refineCarburant.value)
 );
 
 // STATIONS *********
 
 const stationStore = useStationStore();
 
-stationStore
-  .fetchStations("PARIS")
-  .then(() => console.log("fetched stations for Paris : ", stationStore.items));
+stationStore.fetchStations(defaultVille).then(() => {
+  console.log("fetched stations for Paris : ", stationStore.items);
+  isLoadingStations.value = false;
+});
+
+const stations = computed(() => {
+  // const st = stationStore.items.find(
+  //   (group) => group.ville === refineVille.value
+  // )?.stations;
+  const st = stationStore.getStationsByVille(refineVille.value);
+  console.log("station computed value ", st);
+  return st;
+});
 </script>
 
 <template>
-  <div class="home w-full">
-    <div class="line flex justify-evenly p-32">
+  <div class="home w-full flex flex-col justify-center items-center">
+    <div class="w-full flex justify-evenly p-32">
       <SearchDropDown
         class="w-[25%]"
         name="Ville"
@@ -61,5 +76,41 @@ stationStore
         v-model="refineCarburant"
       />
     </div>
+    <div class="flex flex-col justify-center items-center">
+      <div v-if="isLoadingStations" class="loading-spinner"></div>
+      <div v-else class="result-list flex flex-col">
+        <div class="" v-for="station in stations" :key="station.id">
+          <StationTile :station="station"></StationTile>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.loading-spinner {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  -webkit-animation: spin 1s linear infinite;
+}
+.loading-spinner.small {
+  width: 20px;
+  height: 20px;
+}
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+</style>
