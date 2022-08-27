@@ -29,17 +29,17 @@ function carburantPrice(c: string) {
 </script>
 
 <template>
-  <div class="list-tile w-full my-3">
+  <div class="list-tile w-full py-3 text-slate-300">
     <div
-      class="main w-full max-w-full my-3 flex flex-col md:flex-row justify-center items-center md:justify-between"
+      class="main w-full my-3 flex flex-col md:flex-row justify-center items-center md:justify-between"
     >
       <div
-        class="prices px-2 md:px-3 flex flex-grow justify-between border-2 md:border-0 border-slate-100/80 rounded-2xl"
+        class="prices px-2 md:px-3 flex justify-between border-2 md:border-0 border-slate-100/80 rounded-2xl"
       >
         <div
           class="flex flex-1 flex-col justify-start items-center p-2 md:p-3 md:mx-3 border-0 md:border-2 border-slate-100/80 rounded-2xl"
           :class="{
-            'border-slate-300/30 text-white/40': !carburantPrice(
+            'border-slate-300/20 text-white/10': !carburantPrice(
               carburant.name
             ),
           }"

@@ -61,26 +61,28 @@ const stations = computed(() => {
 <template>
   <div class="home w-full flex flex-col justify-center items-center">
     <div
-      class="w-full flex flex-col md:flex-row justify-evenly py-10 px-7 md:p-32"
+      class="w-full flex flex-col md:flex-row justify-evenly py-10 px-7 md:px-32"
     >
       <SearchDropDown
-        class="w-full md:w-[25%]"
+        class="w-full md:w-[35%]"
         name="Ville"
         :items="villes"
         v-model="refineVille"
         required
       />
       <SearchDropDown
-        class="w-full md:w-[25%] mt-5 md:mt-0"
+        class="w-full md:w-[35%] mt-5 md:mt-0"
         name="Carburant"
         :items="carburants"
         v-model="refineCarburant"
       />
     </div>
-    <div class="flex flex-col justify-center items-center px-5">
+    <div
+      class="w-full max-w-full px-5 flex flex-col justify-center items-center"
+    >
       <div v-if="isLoadingStations" class="loading-spinner"></div>
       <div v-else class="result-list w-full max-w-full flex flex-col">
-        <div class="" v-for="station in stations" :key="station.id">
+        <div v-for="station in stations" :key="station.id">
           <StationTile :station="station"></StationTile>
         </div>
       </div>
