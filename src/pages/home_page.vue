@@ -61,7 +61,7 @@ const stations = computed(() => {
 <template>
   <div class="home w-full flex flex-col justify-center items-center">
     <div
-      class="w-full flex flex-col md:flex-row justify-evenly py-10 px-7 md:px-32"
+      class="w-full flex flex-col md:flex-row md:max-w-7xl justify-evenly py-10 px-7 md:px-32"
     >
       <SearchDropDown
         class="w-full md:w-[35%]"

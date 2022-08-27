@@ -31,7 +31,7 @@ function carburantPrice(c: string) {
 <template>
   <div class="list-tile w-full py-3 text-slate-300">
     <div
-      class="main w-full my-3 flex flex-col md:flex-row justify-center items-center md:justify-between"
+      class="main w-full my-3 flex flex-col md:flex-row justify-center items-center"
     >
       <div
         class="prices px-2 md:px-3 flex justify-between border-2 md:border-0 border-slate-100/80 rounded-2xl"
