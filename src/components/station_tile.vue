@@ -19,30 +19,54 @@ const carburants = computed(() => {
 });
 
 function carburantPrice(c: string) {
-  return station.value.carburants.find((carburant) => carburant.name === c)
-    ?.price;
+  return station.value.carburants
+    .find((carburant) => carburant.name === c)
+    ?.price.toFixed(3);
 }
+
+// const isFirst = (index: number) => index == 0;
+// const isLast = (index: number) => index == carburants.value.length - 1;
 </script>
 
 <template>
-  <div class="list-tile w-full my-3 flex justify-between">
-    <div class="prices flex flex-grow justify-between bg-slate-500">
-      <div
-        class="flex flex-col justify-start items-center mx-5"
-        v-for="carburant in carburants"
-        :key="carburant.name"
-      >
-        <h1>{{ carburant.name }}</h1>
-        <p class="mt-3">{{ carburantPrice(carburant.name) ?? "-.---" }}</p>
-      </div>
-    </div>
+  <div class="list-tile w-full my-3">
     <div
-      class="address max-w-[200px] w-[200px] bg-orange-900 ml-5 flex justify-center items-center"
+      class="main w-full max-w-full my-3 flex flex-col md:flex-row justify-center items-center md:justify-between"
     >
-      <span class="w-7 h-7">
-        <MapPinIcon></MapPinIcon>
-      </span>
-      <h1 class="text-center ml-3">Station</h1>
+      <div
+        class="prices px-2 md:px-3 flex flex-grow justify-between border-2 md:border-0 border-slate-100/80 rounded-2xl"
+      >
+        <div
+          class="flex flex-1 flex-col justify-start items-center p-2 md:p-3 md:mx-3 border-0 md:border-2 border-slate-100/80 rounded-2xl"
+          :class="{
+            'border-slate-300/30 text-white/40': !carburantPrice(
+              carburant.name
+            ),
+          }"
+          v-for="carburant in carburants"
+          :key="carburant.name"
+        >
+          <h1 class="text-sm md:text-base">{{ carburant.name }}</h1>
+          <p class="mt-3 text-xs md:text-sm">
+            {{ carburantPrice(carburant.name) ?? "0.000" }}
+          </p>
+        </div>
+      </div>
+      <a
+        class="address px-12 mt-5 md:mt-0 md:ml-7 md:py-2 w-fit flex justify-center items-center md:border-2 rounded-xl"
+        :href="
+          'http://www.google.com/maps/place/' +
+          station.position.lat +
+          ',' +
+          station.position.long
+        "
+        target="_blank"
+      >
+        <span class="w-7 h-7">
+          <MapPinIcon></MapPinIcon>
+        </span>
+        <h1 class="text-center ml-3">Voir sur la carte</h1>
+      </a>
     </div>
   </div>
 </template>
