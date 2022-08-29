@@ -7,12 +7,10 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
 </script>
 
 <template>
-  <header
-    class="relative flex justify-center items-center py-5 mb-10 bg-slate-800 shadow-md"
-  >
-    <h1 class="text-lg md:text-2xl">Prix des carburant</h1>
+  <header class="relative flex justify-center items-center py-7 mb-10">
+    <h1 class="text-lg md:text-2xl font-bold">Prix des carburant</h1>
     <button
-      class="absolute right-3 bg-teal-600 dark:bg-teal-800 px-5 py-2 rounded-full text-sm md:text-base flex justify-center items-center"
+      class="absolute right-3 bg-teal-500 dark:bg-teal-800 px-5 py-2 rounded-full text-slate-100 text-sm md:text-base flex justify-center items-center"
     >
       <ChartBarIcon class="h-5" />
       <p class="ml-3 hidden md:block">Suivis</p>
@@ -24,7 +22,7 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
   </main>
 
   <footer
-    class="flex flex-col justify-center items-center mt-10 py-9 bg-slate-800 text-sm md:text-base"
+    class="flex flex-col justify-center items-center mt-10 py-9 text-sm md:text-base"
   >
     <a
       class="flex justify-center items-center"
