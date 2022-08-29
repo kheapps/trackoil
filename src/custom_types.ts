@@ -49,6 +49,7 @@ export type Station = {
   id: string;
   carburants: Carburant[];
   position: Coordinates;
+  date_maj: Date;
 };
 
 export type Carburant = {

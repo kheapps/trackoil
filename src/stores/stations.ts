@@ -29,13 +29,16 @@ export const useStationStore = defineStore("stations", {
     },
     async updateGroupData(ville: string) {
       const stations = this.getStationsByVille(ville);
-      if (stations)
+      if (stations) {
         for (const station of stations) {
           const prices = await this.fetchPrices(station);
           station.position = prices.coordinates;
           station.carburants = prices.carburants;
+          console.log("station : ", station.id);
+          console.log("date maj fetched ddata ", prices.carburants[0].date_maj);
+          station.date_maj = prices.carburants[0].date_maj;
         }
-
+      }
       // console.log("parsed group : ", stations);
       // console.log("items station store ", this.items);
     },

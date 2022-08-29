@@ -53,7 +53,10 @@ const stations = computed(() => {
   if (refineVille.value === "") return [];
   const st = stationStore.getStationsByVille(refineVille.value);
   console.log("station computed value ", st);
-  if (!st) stationStore.fetchStations(refineVille.value);
+  if (!st) {
+    console.log("station undefined ", st);
+    stationStore.fetchStations(refineVille.value);
+  }
   return st;
 });
 </script>
