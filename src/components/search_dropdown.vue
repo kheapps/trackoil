@@ -122,7 +122,7 @@ onClickOutside(dropdownRef, () => {
       </div>
     </div>
     <div
-      class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute -t-10 shadow-md"
+      class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
       :class="{
         'h-48': showList,
         'h-fit': emptyList && showList,
