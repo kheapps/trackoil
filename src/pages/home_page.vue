@@ -8,9 +8,14 @@ import { useStationStore } from "@/stores/stations";
 
 import SearchDropDown from "@/components/search_dropdown.vue";
 import StationTile from "../components/station_tile.vue";
+import type { Station } from "@/custom_types";
 
 const defaultVille = "Paris";
 const isLoadingStations = ref(false);
+const selectedStation = ref(0);
+
+const isSelectedStation = (ind: number) => selectedStation.value === ind;
+const selectStation = (ind: number) => (selectedStation.value = ind);
 
 // VILLES *********
 
@@ -59,6 +64,9 @@ const stations = computed(() => {
   }
   return st;
 });
+
+const noCarburant = (station: Station) =>
+  station.carburants?.length === 0 || !station.carburants[0].name;
 </script>
 
 <template>
@@ -84,9 +92,19 @@ const stations = computed(() => {
       class="w-full max-w-full px-5 flex flex-col justify-center items-center"
     >
       <div v-if="isLoadingStations" class="loading-spinner"></div>
-      <div v-else class="result-list w-full max-w-full flex flex-col">
-        <div v-for="station in stations" :key="station.id">
-          <StationTile :station="station"></StationTile>
+      <div v-else class="result-list w-full max-w-full flex justify-center">
+        <div class="w-fit flex flex-col justify-center items-center">
+          <StationTile
+            class="flex-grow"
+            :class="{
+              hidden: noCarburant(station),
+            }"
+            v-for="(station, ind) in stations"
+            :key="station.id"
+            :station="station"
+            :selected="isSelectedStation(ind)"
+            @click="selectStation(ind)"
+          />
         </div>
       </div>
     </div>

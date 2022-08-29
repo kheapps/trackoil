@@ -34,8 +34,8 @@ export const useStationStore = defineStore("stations", {
           const prices = await this.fetchPrices(station);
           station.position = prices.coordinates;
           station.carburants = prices.carburants;
-          console.log("station : ", station.id);
-          console.log("date maj fetched ddata ", prices.carburants[0].date_maj);
+          // console.log("station : ", station.id);
+          // console.log("date maj fetched ddata ", prices.carburants[0].date_maj);
           station.date_maj = prices.carburants[0].date_maj;
         }
       }
