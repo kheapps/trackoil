@@ -20,6 +20,7 @@ export const useStationStore = defineStore("stations", {
       const url =
         "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&facet=id&facet=adresse&refine.ville=" +
         ville;
+      if (this.getStationsByVille(ville)) return;
       const data = await fetchData(url);
       const group = parseStation(data);
       // console.log("parsed station data : ", group);

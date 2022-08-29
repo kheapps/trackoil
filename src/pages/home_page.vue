@@ -11,7 +11,6 @@ import StationTile from "../components/station_tile.vue";
 import type { Station } from "@/custom_types";
 
 const defaultVille = "Paris";
-const isLoadingStations = ref(false);
 const selectedStation = ref(0);
 
 const isSelectedStation = (ind: number) => selectedStation.value === ind;
@@ -49,10 +48,10 @@ const refineCarburant = ref("");
 
 const stationStore = useStationStore();
 
-stationStore.fetchStations(defaultVille).then(() => {
-  console.log("fetched stations for Paris : ", stationStore.items);
-  isLoadingStations.value = false;
-});
+// stationStore.fetchStations(defaultVille).then(() => {
+//   console.log("fetched stations for Paris : ", stationStore.items);
+//   // isLoadingStations.value = false;
+// });
 
 const stations = computed(() => {
   if (refineVille.value === "") return [];
@@ -91,8 +90,7 @@ const noCarburant = (station: Station) =>
     <div
       class="w-full max-w-full px-5 flex flex-col justify-center items-center"
     >
-      <div v-if="isLoadingStations" class="loading-spinner"></div>
-      <div v-else class="result-list w-full max-w-full flex justify-center">
+      <div class="result-list w-full max-w-full flex justify-center">
         <div class="w-fit flex flex-col justify-center items-center">
           <StationTile
             class="flex-grow"
@@ -110,31 +108,3 @@ const noCarburant = (station: Station) =>
     </div>
   </div>
 </template>
-
-<style scoped>
-.loading-spinner {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 50px;
-  height: 50px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  -webkit-animation: spin 1s linear infinite;
-}
-.loading-spinner.small {
-  width: 20px;
-  height: 20px;
-}
-@keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes spin {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-</style>

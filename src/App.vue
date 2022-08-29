@@ -59,3 +59,31 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
     </h3>
   </footer>
 </template>
+
+<style>
+.loading-spinner {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  -webkit-animation: spin 1s linear infinite;
+}
+.loading-spinner.small {
+  width: 20px;
+  height: 20px;
+}
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+</style>
