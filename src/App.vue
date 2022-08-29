@@ -44,7 +44,7 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
       <p class="ml-3">Voir le code source</p>
     </a>
     <p>
-      Les données proviennent de cette
+      Données issues de cette
       <a
         class="text-teal-700"
         href="https://data.economie.gouv.fr/explore/dataset/prix-carburants-fichier-instantane-test-ods-copie/api/"

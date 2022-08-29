@@ -2,14 +2,14 @@ import { defineStore } from "pinia";
 
 import axios from "axios";
 
-import type { ApiResponse, Facet } from "@/custom_types";
+import type { ApiResponse, ApiFacet } from "@/custom_types";
 
 const api_url =
   "https://data.economie.gouv.fr/api/records/1.0/search/?dataset=prix-carburants-fichier-instantane-test-ods-copie&q=&facet=ville";
 
 export const useVillesStore = defineStore("villes", {
   state: () => ({
-    items: [] as Facet[],
+    items: [] as ApiFacet[],
   }),
   getters: {},
   actions: {
