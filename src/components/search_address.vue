@@ -3,23 +3,21 @@ import { computed, ref, toRefs, watch } from "vue";
 
 import { onClickOutside } from "@vueuse/core";
 
-import type { ApiFacet } from "../custom_types";
+import type { Address } from "../custom_types";
+import axios from "axios";
+import { parseAdressesSuggestions } from "@/utils";
 
 const emit = defineEmits(["update:modelValue"]);
 
-const props = defineProps({
-  items: { type: Array<ApiFacet>, default: new Array<ApiFacet>() },
-  modelValue: String,
-  name: String,
-  required: { type: Boolean, default: false },
-});
+const props = defineProps({ modelValue: String });
 
-const { items, name, required, modelValue } = toRefs(props);
+const { modelValue } = toRefs(props);
 
-console.log("search ", name?.value, required.value);
+// console.log("search ", name?.value, required.value);
 
-const filteredItems = ref([...items.value]);
+// const filteredItems = ref([...items.value]);
 
+const items = ref([] as Address[]);
 const searchValue = ref(modelValue?.value ?? "");
 const dropdownRef = ref();
 const input = ref();
@@ -28,24 +26,47 @@ const dropdown = ref(null);
 const isFocused = ref(false);
 
 const emptyList = computed(() => {
-  return filteredItems.value.length === 0;
+  // return filteredItems.value.length === 0;
+  return true;
 });
 
 const emptySearch = computed(() => searchValue.value === "");
 
-watch(items, () => {
-  console.log("updated items watch : ", items.value);
-  filteredItems.value = [...items.value];
-  if (required.value && searchValue.value === "")
-    searchValue.value = items.value[0].name;
-});
+// watch(items, () => {
+//   console.log("updated items watch : ", items.value);
+//   filteredItems.value = [...items.value];
+//   if (required.value && searchValue.value === "")
+//     searchValue.value = items.value[0].name;
+// });
+
+let timeout: number;
 
 watch(searchValue, (search) => {
   // console.log("search : ", search);
   // console.log("items : ", items);
-  filteredItems.value = items.value.filter((v) =>
-    v.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // filteredItems.value = items.value.filter((v) =>
+  //   v.name.toLowerCase().includes(search.toLowerCase())
+  // );
+  clearTimeout(timeout);
+
+  // Make a new timeout set to go off in 1000ms (1 second)
+  timeout = setTimeout(function () {
+    if (search === "") return;
+    console.log("search query before ", search);
+    const querySearch = search.split(" ").join("+");
+    console.log("search query after ", querySearch);
+    axios
+      .get(
+        "https://api-adresse.data.gouv.fr/search/?q=" +
+          querySearch +
+          "&limit=25"
+      )
+      .then((res) => {
+        const suggestions = parseAdressesSuggestions(res.data);
+        console.log("suggested addresses : ", suggestions);
+      });
+    console.log(search);
+  }, 500);
 });
 
 function choseListElement(e: string) {
@@ -56,8 +77,9 @@ function choseListElement(e: string) {
   if (showList.value) toggleShowList(false, true);
 }
 
-function firstItem() {
-  return filteredItems.value[0]?.name ?? items.value[0].name;
+function firstItem(): string {
+  // return filteredItems.value[0]?.name ?? items.value[0].name;
+  return "";
 }
 
 function toggleShowList(show: boolean, chosenItem = false) {
@@ -65,13 +87,12 @@ function toggleShowList(show: boolean, chosenItem = false) {
   if (!show) input.value.blur();
   showList.value = show;
   console.log("toggle show is item chosen ", chosenItem);
-  if (required.value && !show && !chosenItem) choseListElement(firstItem());
+  // if (required.value && !show && !chosenItem) choseListElement(firstItem());
 }
 
 function clearSearch() {
   searchValue.value = "";
   emit("update:modelValue", "");
-  if (required.value) input.value.focus();
 }
 
 onClickOutside(dropdownRef, () => {
@@ -86,14 +107,12 @@ onClickOutside(dropdownRef, () => {
   <div class="choice w-full relative" ref="dropdownRef">
     <div class="w-full flex flex-row justify-start items-end relative">
       <label class="w-full" for="searchBar">
-        <span class="ml-2">
-          {{ name }}
-        </span>
+        <span class="ml-2"> Adresse </span>
         <input
           class="w-full h-9 text-slate-800 mt-1 pl-3 pr-10 py-2 bg-white placeholder-slate-400 disabled:bg-slate-50 disabled:text-slate-500 block rounded-xl sm:text-sm invalid:border-red-500 invalid:text-red-600 disabled:shadow-none border-[1px] border-emerald-900/50 dark:border-none focus:outline-none focus:border-teal-700 focus:ring-1 focus:ring-teal-700/30 transition-all duration-50 z-10"
           id="searchBar"
           type="text"
-          :placeholder="name"
+          placeholder="Adresse"
           v-model="searchValue"
           @focus="toggleShowList(true)"
           @keydown.enter="choseListElement(firstItem())"
@@ -121,7 +140,7 @@ onClickOutside(dropdownRef, () => {
         </svg>
       </div>
     </div>
-    <div
+    <!-- <div
       class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
       :class="{
         'h-48': showList,
@@ -140,7 +159,7 @@ onClickOutside(dropdownRef, () => {
           {{ v.name }}
         </li>
       </ul>
-    </div>
+    </div> -->
   </div>
 </template>
 

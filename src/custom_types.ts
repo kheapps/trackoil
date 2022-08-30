@@ -67,3 +67,37 @@ export type Prices = {
   coordinates: Coordinates;
   carburants: Carburant[];
 };
+
+// ####################### ADRESSE API ###############################
+
+export type ApiAddressResponse = {
+  query: string;
+  limit: number;
+  features: ApiAddressFeature[];
+};
+
+export type ApiAddressFeature = {
+  geometry: ApiAddressGeometry;
+  properties: ApiAddressProperties;
+};
+
+export type ApiAddressGeometry = {
+  coordinates: number[];
+};
+
+export type ApiAddressProperties = {
+  label: string;
+  score: number;
+  postcode: string;
+  city: string;
+  context: string;
+};
+
+export type Address = {
+  label: string;
+  code_postal: string;
+  ville: string;
+  departement: string;
+  coordinates: Coordinates;
+  ordering_score: number;
+};

@@ -5,6 +5,8 @@ import type {
   StationGroup,
   Coordinates,
   ApiRecord,
+  ApiAddressResponse,
+  Address,
 } from "@/custom_types";
 
 import axios from "axios";
@@ -66,4 +68,39 @@ export function formatLastMajDate(date: Date): string {
   // console.log("parse date format", date);
   if (isNaN(date?.valueOf())) return "NC";
   return date.toLocaleDateString() + " à " + date.toLocaleTimeString();
+}
+
+// ####################### ADRESSE API ###############################
+
+export function searchAddresses(search: string) {
+  axios
+    .get("https://api-adresse.data.gouv.fr/search/?q=" + search + "&limit=25")
+    .then((res) => {
+      parseAdressesSuggestions(res.data);
+    });
+}
+
+export function parseAdressesSuggestions(data: ApiAddressResponse): Address[] {
+  const addresses = [] as Address[];
+  console.log("Parsing addresses data ", data);
+  const features = data.features;
+  console.log("features data received ", features);
+
+  features.forEach((f) => {
+    const a = {} as Address;
+
+    a.label = f.properties.label;
+    a.ville = f.properties.city;
+    a.code_postal = f.properties.postcode;
+    a.departement = f.properties.context;
+    a.ordering_score = f.properties.score;
+    a.coordinates = {
+      lat: f.geometry.coordinates[1],
+      long: f.geometry.coordinates[0],
+    };
+
+    addresses.push(a);
+  });
+
+  return addresses;
 }
