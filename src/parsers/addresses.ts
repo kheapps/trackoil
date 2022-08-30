@@ -13,13 +13,14 @@ export async function searchAddresses(search: string): Promise<Address[]> {
 
 function parseAddressesSuggestions(data: ApiAddressResponse): Address[] {
   const addresses = [] as Address[];
-  console.log("Parsing addresses data ", data);
+  // console.log("Parsing addresses data ", data);
   const features = data.features;
-  console.log("features data received ", features);
+  // console.log("features data received ", features);
 
   features.forEach((f) => {
     const a = {} as Address;
 
+    a.id = f.properties.id;
     a.label = f.properties.label;
     a.ville = f.properties.city;
     a.code_postal = f.properties.postcode;

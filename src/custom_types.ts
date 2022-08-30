@@ -34,12 +34,14 @@ export type ApiRecordFields = {
   prix_maj: string;
   prix_nom: string;
   prix_valeur: number;
+  ville: string;
 };
 
 // PARSED TYPES
 
 export type StationGroup = {
-  ville: string;
+  searchId: string;
+  searchLabel: string;
   stations: Station[];
 };
 
@@ -56,6 +58,7 @@ export type Carburant = {
   name: string;
   price: number;
   date_maj: Date;
+  ville: string;
 };
 
 export type Coordinates = {
@@ -86,6 +89,7 @@ export type ApiAddressGeometry = {
 };
 
 export type ApiAddressProperties = {
+  id: string;
   label: string;
   score: number;
   postcode: string;
@@ -94,6 +98,7 @@ export type ApiAddressProperties = {
 };
 
 export type Address = {
+  id: string;
   label: string;
   code_postal: string;
   ville: string;

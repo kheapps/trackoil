@@ -18,10 +18,6 @@ export function parseStation(payload: ApiResponse): StationGroup {
   // console.log("Parsing object : ", payload);
   const stations = [] as Station[];
 
-  const ville =
-    payload.facet_groups.find((f) => f.name.toLowerCase() === "ville")
-      ?.facets[0].name ?? "";
-
   const adresses =
     payload.facet_groups.find((f) => f.name.toLowerCase() === "adresse")
       ?.facets ?? [];
@@ -33,7 +29,7 @@ export function parseStation(payload: ApiResponse): StationGroup {
     const station = {} as Station;
     station.address = address.name;
     station.id = ids[index].name;
-    station.ville = ville;
+    station.ville = "";
     station.carburants = [] as Carburant[];
     station.position = {} as Coordinates;
 
@@ -41,7 +37,8 @@ export function parseStation(payload: ApiResponse): StationGroup {
   });
 
   return {
-    ville: ville,
+    searchId: "",
+    searchLabel: "",
     stations: stations,
   };
 }
@@ -55,9 +52,13 @@ export function parseCarburant(records: ApiRecord[]): Carburant[] {
     c.name = record.fields.prix_nom;
     c.price = record.fields.prix_valeur;
     c.date_maj = new Date(record.fields.prix_maj);
+    c.ville = record.fields.ville;
+    // console.log("ville carburant : ", c.ville, record.fields.ville)
 
     // console.log("c = ", c);
     carburants.push(c);
   });
-  return carburants;
+  return carburants.sort((a, b) =>
+    a.name > b.name ? 1 : a.name < b.name ? -1 : 0
+  );
 }

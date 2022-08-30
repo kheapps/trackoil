@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { onClickOutside } from "@vueuse/core";
 
 import type { Address } from "../custom_types";
 import { searchAddresses } from "@/parsers/addresses";
 
-// const emit = defineEmits(["update:modelValue"]);
-const props = defineProps({ modelValue: String });
-const { modelValue } = toRefs(props);
+const emit = defineEmits(["choose-address"]);
 
 const items = ref([] as Address[]);
 const isLoading = ref(false);
-const searchValue = ref(modelValue?.value ?? "");
+const searchValue = ref("");
 const dropdownRef = ref();
 const input = ref();
 const showList = ref(false);
@@ -24,13 +22,6 @@ const isListEmpty = computed(() => {
 });
 
 const emptySearch = computed(() => searchValue.value === "");
-
-// watch(items, () => {
-//   console.log("updated items watch : ", items.value);
-//   filteredItems.value = [...items.value];
-//   if (required.value && searchValue.value === "")
-//     searchValue.value = items.value[0].name;
-// });
 
 let timeout: number;
 
@@ -48,7 +39,7 @@ watch(searchValue, (search) => {
     const querySearch = search.split(" ").join("+");
 
     searchAddresses(querySearch).then((addresses) => {
-      console.log("suggested addresses : ", addresses);
+      // console.log("suggested addresses : ", addresses);
       items.value = [...addresses];
       isLoading.value = false;
     });
@@ -56,13 +47,13 @@ watch(searchValue, (search) => {
 });
 
 function chooseListElement(address: Address) {
-  console.log("chosen address ", address);
+  // console.log("chosen address ", address);
   if (address) {
     searchValue.value = address.label;
     chosenItem.value = address;
   }
-  // emit("update:modelValue", e);
-  console.log("show list value ", showList.value);
+  emit("choose-address", address);
+  // console.log("show list value ", showList.value);
   if (showList.value) toggleShowList(false, true);
 }
 
@@ -73,7 +64,7 @@ function firstItem(): Address {
 function toggleShowList(show: boolean, chosenItem = false) {
   if (!show) input.value.blur();
   showList.value = show;
-  console.log("toggle show is item chosen ", chosenItem);
+  // console.log("toggle show is item chosen ", chosenItem);
   // if (required.value && !show && !chosenItem) choseListElement(firstItem());
 }
 
@@ -86,6 +77,7 @@ function clearSearch() {
 }
 
 onClickOutside(dropdownRef, () => {
+  if (!showList.value) return;
   input.value.blur();
   chooseListElement(chosenItem.value ?? firstItem());
   toggleShowList(false);
