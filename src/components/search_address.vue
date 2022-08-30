@@ -4,8 +4,7 @@ import { computed, ref, toRefs, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
 import type { Address } from "../custom_types";
-import axios from "axios";
-import { parseAdressesSuggestions } from "@/utils";
+import { searchAddresses } from "@/parsers/addresses";
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -18,6 +17,7 @@ const { modelValue } = toRefs(props);
 // const filteredItems = ref([...items.value]);
 
 const items = ref([] as Address[]);
+const isLoading = ref(false);
 const searchValue = ref(modelValue?.value ?? "");
 const dropdownRef = ref();
 const input = ref();
@@ -25,9 +25,8 @@ const showList = ref(false);
 const dropdown = ref(null);
 const isFocused = ref(false);
 
-const emptyList = computed(() => {
-  // return filteredItems.value.length === 0;
-  return true;
+const isListEmpty = computed(() => {
+  return items.value.length == 0;
 });
 
 const emptySearch = computed(() => searchValue.value === "");
@@ -42,30 +41,22 @@ const emptySearch = computed(() => searchValue.value === "");
 let timeout: number;
 
 watch(searchValue, (search) => {
-  // console.log("search : ", search);
-  // console.log("items : ", items);
-  // filteredItems.value = items.value.filter((v) =>
-  //   v.name.toLowerCase().includes(search.toLowerCase())
-  // );
   clearTimeout(timeout);
+  if (search === "") {
+    items.value = [];
+    isLoading.value = false;
+    return;
+  }
+  isLoading.value = true;
 
-  // Make a new timeout set to go off in 1000ms (1 second)
   timeout = setTimeout(function () {
-    if (search === "") return;
-    console.log("search query before ", search);
     const querySearch = search.split(" ").join("+");
-    console.log("search query after ", querySearch);
-    axios
-      .get(
-        "https://api-adresse.data.gouv.fr/search/?q=" +
-          querySearch +
-          "&limit=25"
-      )
-      .then((res) => {
-        const suggestions = parseAdressesSuggestions(res.data);
-        console.log("suggested addresses : ", suggestions);
-      });
-    console.log(search);
+
+    searchAddresses(querySearch).then((addresses) => {
+      console.log("suggested addresses : ", addresses);
+      items.value = [...addresses];
+      isLoading.value = false;
+    });
   }, 500);
 });
 
@@ -92,6 +83,7 @@ function toggleShowList(show: boolean, chosenItem = false) {
 
 function clearSearch() {
   searchValue.value = "";
+  items.value = [];
   emit("update:modelValue", "");
 }
 
@@ -140,26 +132,35 @@ onClickOutside(dropdownRef, () => {
         </svg>
       </div>
     </div>
-    <!-- <div
+    <div
       class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
       :class="{
         'h-48': showList,
-        'h-fit': emptyList && showList,
+        'h-fit': isListEmpty && showList,
       }"
       ref="dropdown"
     >
       <ul>
-        <p class="text-center m-1" v-if="emptyList">Aucun résultat.</p>
+        <div
+          v-if="isLoading"
+          class="w-full h-full flex justify-center items-center my-5"
+        >
+          <div
+            class="loading-spinner border-teal-900/70 border-t-teal-500"
+          ></div>
+        </div>
+        <p class="text-center m-1" v-if="isListEmpty && !isLoading">
+          Aucun résultat.
+        </p>
         <li
           class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
-          v-for="(v, ind) in filteredItems"
+          v-for="(address, ind) in items"
           :key="ind"
-          @click="choseListElement(v.name)"
         >
-          {{ v.name }}
+          {{ address.label }}
         </li>
       </ul>
-    </div> -->
+    </div>
   </div>
 </template>
 

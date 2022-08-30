@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import type { Prices, Station, StationGroup } from "@/custom_types";
-import { fetchData, parseCarburant, parseStation } from "@/utils";
+import { fetchData, parseCarburant, parseStation } from "@/parsers/stations";
 
 export const useStationStore = defineStore("stations", {
   state: () => ({
