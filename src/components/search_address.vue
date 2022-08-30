@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch } from "vue";
+import { computed, ref, toRefs, watch, reactive } from "vue";
 
 import { onClickOutside } from "@vueuse/core";
 
@@ -7,14 +7,8 @@ import type { Address } from "../custom_types";
 import { searchAddresses } from "@/parsers/addresses";
 
 const emit = defineEmits(["update:modelValue"]);
-
 const props = defineProps({ modelValue: String });
-
 const { modelValue } = toRefs(props);
-
-// console.log("search ", name?.value, required.value);
-
-// const filteredItems = ref([...items.value]);
 
 const items = ref([] as Address[]);
 const isLoading = ref(false);
@@ -24,6 +18,8 @@ const input = ref();
 const showList = ref(false);
 const dropdown = ref(null);
 const isFocused = ref(false);
+
+const chosenItem = ref<Address | undefined>(undefined);
 
 const isListEmpty = computed(() => {
   return items.value.length == 0;
@@ -47,6 +43,7 @@ watch(searchValue, (search) => {
     isLoading.value = false;
     return;
   }
+  if (chosenItem.value) return;
   isLoading.value = true;
 
   timeout = setTimeout(function () {
@@ -60,17 +57,17 @@ watch(searchValue, (search) => {
   }, 500);
 });
 
-function choseListElement(e: string) {
-  console.log(e);
-  searchValue.value = e;
-  emit("update:modelValue", e);
+function chooseListElement(address: Address) {
+  console.log("chosen address ", address);
+  searchValue.value = address.label;
+  chosenItem.value = address;
+  // emit("update:modelValue", e);
   console.log("show list value ", showList.value);
   if (showList.value) toggleShowList(false, true);
 }
 
-function firstItem(): string {
-  // return filteredItems.value[0]?.name ?? items.value[0].name;
-  return "";
+function firstItem(): Address {
+  return items.value[0] ?? null;
 }
 
 function toggleShowList(show: boolean, chosenItem = false) {
@@ -83,6 +80,7 @@ function toggleShowList(show: boolean, chosenItem = false) {
 
 function clearSearch() {
   searchValue.value = "";
+  chosenItem.value = undefined;
   items.value = [];
   emit("update:modelValue", "");
 }
@@ -90,6 +88,7 @@ function clearSearch() {
 onClickOutside(dropdownRef, () => {
   if (isFocused.value) {
     input.value.blur();
+    chooseListElement(chosenItem.value ?? firstItem());
     toggleShowList(false);
   }
 });
@@ -107,7 +106,7 @@ onClickOutside(dropdownRef, () => {
           placeholder="Adresse"
           v-model="searchValue"
           @focus="toggleShowList(true)"
-          @keydown.enter="choseListElement(firstItem())"
+          @keydown.enter="chooseListElement(chosenItem ?? firstItem())"
           ref="input"
         />
       </label>
@@ -156,6 +155,7 @@ onClickOutside(dropdownRef, () => {
           class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
           v-for="(address, ind) in items"
           :key="ind"
+          @click="chooseListElement(address)"
         >
           {{ address.label }}
         </li>
