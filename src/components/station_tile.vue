@@ -5,7 +5,6 @@ import { MapPinIcon } from "@heroicons/vue/24/outline";
 
 import type { Station } from "@/custom_types";
 import { formatLastMajDate } from "@/utils";
-import { useCarburantStore } from "@/stores/carburant";
 
 onMounted(() => {
   window.addEventListener("resize", () => {
@@ -21,17 +20,9 @@ const props = defineProps<{
 
 const { station, selected } = toRefs(props);
 
-const carburantStore = useCarburantStore();
-
-const carburants = computed(() => {
-  return carburantStore.items;
+const prices = computed(() => {
+  return station.value.carburants;
 });
-
-function carburantPrice(c: string) {
-  return station.value.carburants
-    .find((carburant) => carburant.name === c)
-    ?.price.toFixed(3);
-}
 
 const dateMaj = computed(() => {
   return formatLastMajDate(station.value.carburants[0]?.date_maj);
@@ -51,16 +42,12 @@ const isSmallScreen = ref(false);
       <div class="prices flex justify-center items-center">
         <div
           class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3"
-          :class="{
-            'border-slate-300/20 text-black/30 dark:text-white/10 hidden':
-              !carburantPrice(carburant.name),
-          }"
-          v-for="carburant in carburants"
+          v-for="carburant in prices"
           :key="carburant.name"
         >
           <h1 class="text-sm md:text-base">{{ carburant.name }}</h1>
           <p class="mt-3 text-xs md:text-sm">
-            {{ carburantPrice(carburant.name) ?? "0.000" }}
+            {{ carburant.price ?? "0.000" }}
           </p>
         </div>
       </div>
