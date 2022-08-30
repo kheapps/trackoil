@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, watch, reactive } from "vue";
+import { computed, ref, toRefs, watch } from "vue";
 
 import { onClickOutside } from "@vueuse/core";
 
 import type { Address } from "../custom_types";
 import { searchAddresses } from "@/parsers/addresses";
 
-const emit = defineEmits(["update:modelValue"]);
+// const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({ modelValue: String });
 const { modelValue } = toRefs(props);
 
@@ -16,8 +16,6 @@ const searchValue = ref(modelValue?.value ?? "");
 const dropdownRef = ref();
 const input = ref();
 const showList = ref(false);
-const dropdown = ref(null);
-const isFocused = ref(false);
 
 const chosenItem = ref<Address | undefined>(undefined);
 
@@ -59,8 +57,10 @@ watch(searchValue, (search) => {
 
 function chooseListElement(address: Address) {
   console.log("chosen address ", address);
-  searchValue.value = address.label;
-  chosenItem.value = address;
+  if (address) {
+    searchValue.value = address.label;
+    chosenItem.value = address;
+  }
   // emit("update:modelValue", e);
   console.log("show list value ", showList.value);
   if (showList.value) toggleShowList(false, true);
@@ -71,7 +71,6 @@ function firstItem(): Address {
 }
 
 function toggleShowList(show: boolean, chosenItem = false) {
-  isFocused.value = show;
   if (!show) input.value.blur();
   showList.value = show;
   console.log("toggle show is item chosen ", chosenItem);
@@ -82,15 +81,14 @@ function clearSearch() {
   searchValue.value = "";
   chosenItem.value = undefined;
   items.value = [];
-  emit("update:modelValue", "");
+  toggleShowList(false);
+  // emit("update:modelValue", "");
 }
 
 onClickOutside(dropdownRef, () => {
-  if (isFocused.value) {
-    input.value.blur();
-    chooseListElement(chosenItem.value ?? firstItem());
-    toggleShowList(false);
-  }
+  input.value.blur();
+  chooseListElement(chosenItem.value ?? firstItem());
+  toggleShowList(false);
 });
 </script>
 
@@ -137,7 +135,6 @@ onClickOutside(dropdownRef, () => {
         'h-48': showList,
         'h-fit': isListEmpty && showList,
       }"
-      ref="dropdown"
     >
       <ul>
         <div
