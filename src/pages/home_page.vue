@@ -32,7 +32,6 @@ const stations = computed(() => {
 });
 
 const noStationAvailable = computed(() => {
-  console.log("no station available compputed");
   return stations.value?.length === 0;
 });
 
