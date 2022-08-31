@@ -19,10 +19,11 @@ function setChosenAddress(address: Address) {
     noResultFromApi.value = false;
     return;
   }
+  addressId.value = address.id;
+  if (stationStore.getGroupById(address.id)) return;
   stationStore
     .fetchGeofilter(address)
     .then((res) => (noResultFromApi.value = !res));
-  addressId.value = address.id;
 }
 
 const stations = computed(() => {
