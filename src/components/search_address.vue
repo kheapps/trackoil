@@ -46,26 +46,31 @@ watch(searchValue, (search) => {
   }, 500);
 });
 
+function getAddressLabel(address: Address): string {
+  return address.label === address.ville
+    ? address.label + ", " + address.code_postal
+    : address.label;
+}
+
 function chooseListElement(address: Address) {
   // console.log("chosen address ", address);
   if (address) {
-    searchValue.value = address.label;
+    console.log("chosen address : ", address.ville, address.label);
+    searchValue.value = getAddressLabel(address);
     chosenItem.value = address;
   }
   emit("choose-address", address);
   // console.log("show list value ", showList.value);
-  if (showList.value) toggleShowList(false, true);
+  if (showList.value) toggleShowList(false);
 }
 
 function firstItem(): Address {
   return items.value[0] ?? null;
 }
 
-function toggleShowList(show: boolean, chosenItem = false) {
+function toggleShowList(show: boolean) {
   if (!show) input.value.blur();
   showList.value = show;
-  // console.log("toggle show is item chosen ", chosenItem);
-  // if (required.value && !show && !chosenItem) choseListElement(firstItem());
 }
 
 function clearSearch() {
@@ -73,7 +78,7 @@ function clearSearch() {
   chosenItem.value = undefined;
   items.value = [];
   toggleShowList(false);
-  // emit("update:modelValue", "");
+  emit("choose-address", undefined);
 }
 
 onClickOutside(dropdownRef, () => {
@@ -82,6 +87,10 @@ onClickOutside(dropdownRef, () => {
   chooseListElement(chosenItem.value ?? firstItem());
   toggleShowList(false);
 });
+
+const isNoresult = computed(
+  () => isListEmpty.value && !isLoading.value && searchValue.value.length > 0
+);
 </script>
 
 <template>
@@ -137,16 +146,14 @@ onClickOutside(dropdownRef, () => {
             class="loading-spinner border-teal-900/70 border-t-teal-500"
           ></div>
         </div>
-        <p class="text-center m-1" v-if="isListEmpty && !isLoading">
-          Aucun résultat.
-        </p>
+        <p class="text-center m-1" v-if="isNoresult">Aucun résultat.</p>
         <li
           class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
           v-for="(address, ind) in items"
           :key="ind"
           @click="chooseListElement(address)"
         >
-          {{ address.label }}
+          {{ getAddressLabel(address) }}
         </li>
       </ul>
     </div>

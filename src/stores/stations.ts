@@ -16,7 +16,7 @@ export const useStationStore = defineStore("stations", {
     },
   },
   actions: {
-    async fetchGeofilter(address: Address) {
+    async fetchGeofilter(address: Address): Promise<boolean> {
       const [lat, long] = coordinatesToString(address.coordinates).split(",");
       // console.log("coordinates lat : ", lat, "  long : ", long);
       const url =
@@ -27,6 +27,8 @@ export const useStationStore = defineStore("stations", {
         "%2C+5000";
       const data = await fetchData(url);
       // console.log("geofiltered data fetched : ", data);
+      if (!data.facet_groups) return false;
+
       const group = parseStation(data);
       // console.log("geofiltered data fetched parsed group : ", group);
       group.searchId = address.id;
@@ -34,6 +36,7 @@ export const useStationStore = defineStore("stations", {
 
       this.items.push(group);
       this.updateGroupData(address.id);
+      return true;
     },
     async updateGroupData(searchId: string) {
       const stations = this.getStationsBySearchId(searchId);

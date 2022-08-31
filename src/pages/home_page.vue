@@ -10,9 +10,13 @@ import type { Address } from "@/custom_types";
 const stationStore = useStationStore();
 
 const addressId = ref("");
+const noResultFromApi = ref(false);
 
 function setChosenAddress(address: Address) {
-  stationStore.fetchGeofilter(address);
+  if (!address) return;
+  stationStore
+    .fetchGeofilter(address)
+    .then((res) => (noResultFromApi.value = !res));
   addressId.value = address.id;
 }
 
@@ -45,7 +49,8 @@ const stations = computed(() => {
     <div
       class="w-full max-w-full px-5 flex flex-col justify-center items-center"
     >
-      <div class="result-list w-full max-w-full flex justify-center">
+      <p v-if="noResultFromApi">Aucun résultat.</p>
+      <div v-else class="result-list w-full max-w-full flex justify-center">
         <div class="w-fit flex flex-col justify-center items-center">
           <StationTile
             class="flex-grow"
