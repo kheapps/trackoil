@@ -53,6 +53,7 @@ function getAddressLabel(address: Address): string {
 }
 
 function chooseListElement(address: Address) {
+  if (isLoading.value) return;
   // console.log("chosen address ", address);
   if (address) {
     // console.log("chosen address : ", address.ville, address.label);
@@ -82,7 +83,7 @@ function clearSearch() {
 }
 
 onClickOutside(dropdownRef, () => {
-  if (!showList.value) return;
+  if (!showList.value || isLoading.value) return;
   input.value.blur();
   chooseListElement(chosenItem.value ?? firstItem());
   toggleShowList(false);
