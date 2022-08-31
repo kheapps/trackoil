@@ -5,6 +5,7 @@ import { useStationStore } from "@/stores/stations";
 
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
+import CarburantDropdown from "@/components/carburant_dropdown.vue";
 import type { Address } from "@/custom_types";
 
 const stationStore = useStationStore();
@@ -14,6 +15,7 @@ const noResultFromApi = ref(false);
 
 function setChosenAddress(address: Address) {
   if (!address) {
+    addressId.value = "";
     noResultFromApi.value = false;
     return;
   }
@@ -27,6 +29,27 @@ const stations = computed(() => {
   if (!addressId.value) return [];
   return stationStore.getStationsBySearchId(addressId.value);
 });
+
+const noStationAvailable = computed(() => {
+  console.log("no station available compputed");
+  return stations.value?.length === 0;
+});
+
+const carburantFilter = ref("");
+
+const filters = computed(() => {
+  const filters = [] as string[];
+  stations.value?.forEach((station) => {
+    station.carburants.forEach((c) => {
+      if (!filters.includes(c.name)) filters.push(c.name);
+    });
+  });
+  return filters;
+});
+
+function setCarburantFilter(carburant: string) {
+  carburantFilter.value = carburant;
+}
 </script>
 
 <template>
@@ -36,19 +59,21 @@ const stations = computed(() => {
     >
       <SearchAddress
         class="w-full md:w-[35%]"
-        name="Adresse"
         @choose-address="setChosenAddress"
       />
-      <!-- <SearchDropDown
-        class="w-full md:w-[35%] mt-5 md:mt-0"
-        name="Carburant"
-        :items="carburants"
-        v-model="refineCarburant"
-      /> -->
+      <CarburantDropdown
+        class="w-full md:w-[35%]"
+        @filter-selected="setCarburantFilter"
+        :items="filters"
+      />
     </div>
     <div
       class="w-full max-w-full px-5 flex flex-col justify-center items-center"
     >
+      <p v-if="noStationAvailable">
+        Veuillez saisir une adresse ou une ville pour voir les prix des stations
+        à proximité.
+      </p>
       <p v-if="noResultFromApi">Aucun résultat.</p>
       <div v-else class="result-list w-full max-w-full flex justify-center">
         <div class="w-fit flex flex-col justify-center items-center">
