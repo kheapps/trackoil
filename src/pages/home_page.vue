@@ -5,7 +5,7 @@ import { useStationStore } from "@/stores/stations";
 
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
-import type { Address } from "@/custom_types";
+import type { Address, Station } from "@/custom_types";
 
 const stationStore = useStationStore();
 
@@ -13,7 +13,10 @@ const addressId = ref("");
 const noResultFromApi = ref(false);
 
 function setChosenAddress(address: Address) {
-  if (!address) return;
+  if (!address) {
+    noResultFromApi.value = false;
+    return;
+  }
   stationStore
     .fetchGeofilter(address)
     .then((res) => (noResultFromApi.value = !res));
@@ -24,9 +27,6 @@ const stations = computed(() => {
   if (!addressId.value) return [];
   return stationStore.getStationsBySearchId(addressId.value);
 });
-
-// const noCarburant = (station: Station) =>
-//   station.carburants?.length === 0 || !station.carburants[0].name;
 </script>
 
 <template>

@@ -9,10 +9,19 @@ export const useStationStore = defineStore("stations", {
     items: [] as StationGroup[],
   }),
   getters: {
+    getGroupById(state) {
+      const groups = state.items;
+      return (id: string) => groups.find((group) => group.searchId === id);
+    },
     getStationsBySearchId(state) {
       const groups = state.items;
       return (id: string) =>
-        groups.find((group) => group.searchId === id)?.stations;
+        groups
+          .find((group) => group.searchId === id)
+          ?.stations.filter(
+            (station) =>
+              station.carburants?.length === 0 || !station.carburants[0].name
+          );
     },
   },
   actions: {
