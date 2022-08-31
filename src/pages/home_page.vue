@@ -5,7 +5,7 @@ import { useStationStore } from "@/stores/stations";
 
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
-import type { Address, Station } from "@/custom_types";
+import type { Address } from "@/custom_types";
 
 const stationStore = useStationStore();
 
