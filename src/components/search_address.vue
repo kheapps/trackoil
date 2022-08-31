@@ -55,7 +55,7 @@ function getAddressLabel(address: Address): string {
 function chooseListElement(address: Address) {
   // console.log("chosen address ", address);
   if (address) {
-    console.log("chosen address : ", address.ville, address.label);
+    // console.log("chosen address : ", address.ville, address.label);
     searchValue.value = getAddressLabel(address);
     chosenItem.value = address;
   }

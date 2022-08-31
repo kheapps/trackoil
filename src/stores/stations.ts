@@ -9,6 +9,10 @@ export const useStationStore = defineStore("stations", {
     items: [] as StationGroup[],
   }),
   getters: {
+    getGroupById(state) {
+      const groups = state.items;
+      return (id: string) => groups.find((group) => group.searchId === id);
+    },
     getStationsBySearchId(state) {
       const groups = state.items;
       return (id: string) =>
@@ -26,11 +30,11 @@ export const useStationStore = defineStore("stations", {
         long +
         "%2C+5000";
       const data = await fetchData(url);
-      // console.log("geofiltered data fetched : ", data);
+      console.log("geofiltered data fetched : ", data);
       if (!data.facet_groups) return false;
 
       const group = parseStation(data);
-      // console.log("geofiltered data fetched parsed group : ", group);
+      console.log("geofiltered data fetched parsed group : ", group);
       group.searchId = address.id;
       group.searchLabel = address.label;
 
@@ -41,12 +45,16 @@ export const useStationStore = defineStore("stations", {
     async updateGroupData(searchId: string) {
       const stations = this.getStationsBySearchId(searchId);
       if (stations) {
-        for (const station of stations) {
+        for (const [ind, station] of stations.entries()) {
           const prices = await this.fetchPrices(station);
           station.position = prices.coordinates;
           station.carburants = prices.carburants;
           station.date_maj = prices.carburants[0].date_maj;
           station.ville = prices.carburants[0].ville;
+          if (station.carburants.length === 0 || !station.carburants[0]?.name) {
+            // console.log("station with no valid carburant ", station);
+            stations.splice(ind, 1);
+          }
         }
       }
       // console.log("parsed group : ", stations);

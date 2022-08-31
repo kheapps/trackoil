@@ -17,12 +17,12 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
     </button>
   </header>
 
-  <main>
+  <main class="grow">
     <RouterView class="text-black dark:text-white" />
   </main>
 
   <footer
-    class="flex flex-col justify-center items-center mt-10 py-9 text-sm md:text-base"
+    class="flex flex-col justify-center items-center mt-3 py-9 text-sm md:text-base"
   >
     <a
       class="flex justify-center items-center"
