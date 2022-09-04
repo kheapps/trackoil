@@ -44,7 +44,7 @@ function clearFilter() {
   selectedCarburant.value = "";
   chosenItem.value = undefined;
   toggleShowList(false);
-  // emit("choose-address", undefined);
+  emit("filter-selected", "");
 }
 
 onClickOutside(dropdownRef, () => {

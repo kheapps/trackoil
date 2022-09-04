@@ -7,7 +7,7 @@ import { useStationStore } from "@/stores/stations";
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
 import CarburantDropdown from "@/components/carburant_dropdown.vue";
-import type { Address } from "@/custom_types";
+import type { Address, Carburant } from "@/custom_types";
 
 const stationStore = useStationStore();
 
@@ -28,14 +28,24 @@ function setChosenAddress(address: Address) {
     .then((res) => (noResultFromApi.value = !res));
 }
 
+function hasCarburant(carburants: Carburant[], filter: string): boolean {
+  for (const c of carburants) {
+    if (c.name === filter) return true;
+  }
+  return false;
+}
+
 const stations = computed(() => {
-  if (carburantFilter.value !== "")
-    return dummyStations.stations.sort(
-      (a, b) =>
-        (a.carburants.find((c) => c.name === carburantFilter.value)?.price ??
-          0) -
-        (b.carburants.find((c) => c.name === carburantFilter.value)?.price ?? 0)
-    );
+  // console.log("filter update stations ", carburantFilter.value);
+  const filter = carburantFilter.value;
+  if (filter !== "")
+    return dummyStations.stations
+      .filter((s) => hasCarburant(s.carburants, filter))
+      .sort(
+        (a, b) =>
+          (a.carburants.find((c) => c.name === filter)?.price ?? 0) -
+          (b.carburants.find((c) => c.name === filter)?.price ?? 0)
+      );
   return dummyStations.stations;
   // if (!addressId.value) return [];
   // return stationStore.getStationsBySearchId(addressId.value);
@@ -58,6 +68,7 @@ const filters = computed(() => {
 });
 
 function setCarburantFilter(carburant: string) {
+  // console.log("set carburant filter ", carburant);
   carburantFilter.value = carburant;
 }
 </script>
