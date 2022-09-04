@@ -10,6 +10,36 @@ export const dummyAddress: Address = {
   coordinates: { lat: 48.926101, long: 2.362458 },
 };
 
+export const dummyHistory: Address[] = [
+  {
+    id: "93066",
+    label: "Saint-Denis",
+    ville: "Saint-Denis",
+    code_postal: "93200",
+    departement: "93, Seine-Saint-Denis, Île-de-France",
+    ordering_score: 0.8660690909090909,
+    coordinates: { lat: 48.926101, long: 2.362458 },
+  },
+  {
+    id: "93031",
+    label: "Épinay-sur-Seine",
+    ville: "Épinay-sur-Seine",
+    code_postal: "93800",
+    departement: "93, Seine-Saint-Denis, Île-de-France",
+    ordering_score: 0.8627699999999999,
+    coordinates: { lat: 48.955218, long: 2.31712 },
+  },
+  {
+    id: "34172",
+    label: "Montpellier",
+    ville: "Montpellier",
+    code_postal: "34070",
+    departement: "34, Hérault, Occitanie",
+    ordering_score: 0.9613545454545455,
+    coordinates: { lat: 43.610476, long: 3.87048 },
+  },
+];
+
 export const dummyStations: StationGroup = {
   searchId: "93066",
   searchLabel: "Saint-Denis",

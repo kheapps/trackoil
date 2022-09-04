@@ -18,6 +18,9 @@ export const useStationStore = defineStore("stations", {
       return (id: string) =>
         groups.find((group) => group.searchId === id)?.stations;
     },
+    getSearchHistory(state) {
+      return state.items.map((group) => group.searchLabel);
+    },
   },
   actions: {
     async fetchGeofilter(address: Address): Promise<boolean> {

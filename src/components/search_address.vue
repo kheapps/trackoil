@@ -4,8 +4,11 @@ import { computed, ref, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
 import type { Address } from "../custom_types";
+import { dummyHistory } from "@/assets/data";
 import { searchAddresses } from "@/parsers/addresses";
+// import { useStationStore } from "@/stores/stations";
 
+// const stationStore = useStationStore();
 const emit = defineEmits(["choose-address"]);
 
 const items = ref([] as Address[]);
@@ -22,6 +25,15 @@ const isListEmpty = computed(() => {
 });
 
 const emptySearch = computed(() => searchValue.value === "");
+
+const searchHistory = computed(() => {
+  return dummyHistory;
+  // return [...stationStore.getSearchHistory].reverse();
+});
+
+const showHistory = computed(() => {
+  return searchHistory.value.length > 0 && !isLoading.value;
+});
 
 let timeout: number;
 
@@ -156,6 +168,15 @@ const isNoresult = computed(
         >
           {{ getAddressLabel(address) }}
         </li>
+        <div v-if="showHistory">
+          <li
+            v-for="addr in searchHistory"
+            :key="addr.id"
+            class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
+          >
+            {{ getAddressLabel(addr) }}
+          </li>
+        </div>
       </ul>
     </div>
   </div>
