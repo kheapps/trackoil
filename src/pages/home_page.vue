@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
+import { dummyStations } from "@/assets/data";
 import { useStationStore } from "@/stores/stations";
 
 import SearchAddress from "@/components/search_address.vue";
@@ -20,6 +21,7 @@ function setChosenAddress(address: Address) {
     return;
   }
   addressId.value = address.id;
+  window.localStorage.setItem("address-data", JSON.stringify(address));
   if (stationStore.getGroupById(address.id)) return;
   stationStore
     .fetchGeofilter(address)
@@ -27,8 +29,16 @@ function setChosenAddress(address: Address) {
 }
 
 const stations = computed(() => {
-  if (!addressId.value) return [];
-  return stationStore.getStationsBySearchId(addressId.value);
+  if (carburantFilter.value !== "")
+    return dummyStations.stations.sort(
+      (a, b) =>
+        (a.carburants.find((c) => c.name === carburantFilter.value)?.price ??
+          0) -
+        (b.carburants.find((c) => c.name === carburantFilter.value)?.price ?? 0)
+    );
+  return dummyStations.stations;
+  // if (!addressId.value) return [];
+  // return stationStore.getStationsBySearchId(addressId.value);
 });
 
 const noStationAvailable = computed(() => {
