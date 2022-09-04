@@ -21,7 +21,6 @@ function setChosenAddress(address: Address) {
     return;
   }
   addressId.value = address.id;
-  window.localStorage.setItem("address-data", JSON.stringify(address));
   if (stationStore.getGroupById(address.id)) return;
   stationStore
     .fetchGeofilter(address)
@@ -103,8 +102,9 @@ function setCarburantFilter(carburant: string) {
             v-for="(station, ind) in stations"
             :key="station.id + ' - ' + ind"
             :station="station"
+            :carburant-filter="carburantFilter"
             selected
-          ></StationTile>
+          />
         </div>
       </div>
     </div>

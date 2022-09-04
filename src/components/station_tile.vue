@@ -15,13 +15,20 @@ onMounted(() => {
 
 const props = defineProps<{
   station: Station;
+  carburantFilter: string;
   selected: boolean;
 }>();
 
-const { station, selected } = toRefs(props);
+const { station, selected, carburantFilter } = toRefs(props);
 
 const prices = computed(() => {
-  return station.value.carburants;
+  const filter = carburantFilter.value;
+  const carburants = [...station.value.carburants];
+  if (filter !== "")
+    return carburants.sort((a, b) =>
+      a.name === filter ? -1 : b.name === filter ? 1 : 0
+    );
+  return carburants;
 });
 
 const dateMaj = computed(() => {

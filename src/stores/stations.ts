@@ -57,10 +57,10 @@ export const useStationStore = defineStore("stations", {
           }
         }
       }
-      window.localStorage.setItem(
-        "stations-data",
-        JSON.stringify(this.getGroupById(searchId))
-      );
+      // window.localStorage.setItem(
+      //   "stations-data",
+      //   JSON.stringify(this.getGroupById(searchId))
+      // );
       // console.log("parsed group : ", stations);
       // console.log("items station store ", this.items);
     },
