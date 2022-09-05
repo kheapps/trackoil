@@ -172,6 +172,7 @@ const isNoresult = computed(
           <li
             v-for="addr in searchHistory"
             :key="addr.id"
+            @click="chooseListElement(addr)"
             class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
           >
             {{ getAddressLabel(addr) }}

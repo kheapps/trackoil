@@ -37,8 +37,8 @@ function hasCarburant(carburants: Carburant[], filter: string): boolean {
 const stations = computed(() => {
   if (!addressId.value) return [];
   // console.log("filter update stations ", carburantFilter.value);
-  // const st = [...dummyStations.stations]
-  const st = [...(stationStore.getStationsBySearchId(addressId.value) ?? [])];
+  const st = [...dummyStations.stations];
+  // const st = [...(stationStore.getStationsBySearchId(addressId.value) ?? [])];
   const filter = carburantFilter.value;
   if (filter !== "")
     return st

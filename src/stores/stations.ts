@@ -62,11 +62,11 @@ export const useStationStore = defineStore("stations", {
           }
         }
       }
-      console.log("items station store updated last added group ", this.items);
-      window.localStorage.setItem(
-        "data-station",
-        JSON.stringify(this.getGroupById(searchId))
-      );
+      // console.log("items station store updated last added group ", this.items);
+      // window.localStorage.setItem(
+      //   "data-station",
+      //   JSON.stringify(this.getGroupById(searchId))
+      // );
     },
     async fetchPrices(station: Station): Promise<Prices> {
       // console.log("fetch price for station id : ", station.id);
