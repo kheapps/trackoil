@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, toRefs, ref, onMounted } from "vue";
+import { computed, toRefs, ref } from "vue";
 
 import { MapPinIcon } from "@heroicons/vue/24/outline";
 
 import type { Station } from "@/custom_types";
 import { formatLastMajDate } from "@/utils";
 
-onMounted(() => {
-  window.addEventListener("resize", () => {
-    console.log("resized screen");
-    isSmallScreen.value = window.innerWidth < 768;
-  });
-});
+// onMounted(() => {
+//   window.addEventListener("resize", () => {
+//     // console.log("resized screen");
+//     isSmallScreen.value = window.innerWidth < 768;
+//   });
+// });
 
 const props = defineProps<{
   station: Station;
