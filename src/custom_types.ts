@@ -42,6 +42,7 @@ export type ApiRecordFields = {
 export type StationGroup = {
   searchId: string;
   searchLabel: string;
+  address: Address;
   stations: Station[];
 };
 

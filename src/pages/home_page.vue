@@ -35,19 +35,20 @@ function hasCarburant(carburants: Carburant[], filter: string): boolean {
 }
 
 const stations = computed(() => {
+  if (!addressId.value) return [];
   // console.log("filter update stations ", carburantFilter.value);
+  // const st = [...dummyStations.stations]
+  const st = [...(stationStore.getStationsBySearchId(addressId.value) ?? [])];
   const filter = carburantFilter.value;
   if (filter !== "")
-    return dummyStations.stations
+    return st
       .filter((s) => hasCarburant(s.carburants, filter))
       .sort(
         (a, b) =>
           (a.carburants.find((c) => c.name === filter)?.price ?? 0) -
           (b.carburants.find((c) => c.name === filter)?.price ?? 0)
       );
-  return dummyStations.stations;
-  // if (!addressId.value) return [];
-  // return stationStore.getStationsBySearchId(addressId.value);
+  return st;
 });
 
 const noStationAvailable = computed(() => {
