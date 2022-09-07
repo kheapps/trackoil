@@ -5,6 +5,7 @@ import type {
   StationGroup,
   Coordinates,
   ApiRecord,
+  Address,
 } from "@/custom_types";
 
 import axios from "axios";
@@ -39,6 +40,7 @@ export function parseStation(payload: ApiResponse): StationGroup {
   return {
     searchId: "",
     searchLabel: "",
+    address: {} as Address,
     stations: stations,
   };
 }
