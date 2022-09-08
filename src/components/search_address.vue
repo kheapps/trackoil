@@ -4,11 +4,11 @@ import { computed, ref, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
 import type { Address } from "../custom_types";
-import { dummyHistory } from "@/assets/data";
+// import { dummyHistory } from "@/assets/data";
 import { searchAddresses } from "@/parsers/addresses";
-// import { useStationStore } from "@/stores/stations";
+import { useStationStore } from "@/stores/stations";
 
-// const stationStore = useStationStore();
+const stationStore = useStationStore();
 const emit = defineEmits(["choose-address"]);
 
 const items = ref([] as Address[]);
@@ -27,12 +27,21 @@ const isListEmpty = computed(() => {
 const emptySearch = computed(() => searchValue.value === "");
 
 const searchHistory = computed(() => {
-  return dummyHistory;
-  // return [...stationStore.getSearchHistory].reverse();
+  // return dummyHistory;
+  return [...stationStore.getSearchHistory].reverse();
 });
 
 const showHistory = computed(() => {
-  return searchHistory.value.length > 0 && !isLoading.value;
+  return (
+    searchHistory.value.length > 0 && !isLoading.value && !isNoresult.value
+  );
+});
+
+const setDropdownFullSize = computed(() => {
+  return (
+    (showList.value && (!isListEmpty.value || showHistory.value)) ||
+    isLoading.value
+  );
 });
 
 let timeout: number;
@@ -101,9 +110,9 @@ onClickOutside(dropdownRef, () => {
   toggleShowList(false);
 });
 
-const isNoresult = computed(
-  () => isListEmpty.value && !isLoading.value && searchValue.value.length > 0
-);
+const isNoresult = computed(() => {
+  return isListEmpty.value && !isLoading.value && searchValue.value.length > 0;
+});
 </script>
 
 <template>
@@ -144,13 +153,14 @@ const isNoresult = computed(
       </div>
     </div>
     <div
-      class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
+      class="choices rounded-xl h-fit w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
       :class="{
-        'h-48': showList,
-        'h-fit': isListEmpty && showList,
+        'h-48': setDropdownFullSize,
       }"
+      v-if="showList"
     >
       <ul>
+        <p class="text-center m-1" v-if="isNoresult">Aucun résultat.</p>
         <div
           v-if="isLoading"
           class="w-full h-full flex justify-center items-center my-5"
@@ -159,16 +169,20 @@ const isNoresult = computed(
             class="loading-spinner border-teal-900/70 border-t-teal-500"
           ></div>
         </div>
-        <p class="text-center m-1" v-if="isNoresult">Aucun résultat.</p>
-        <li
-          class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
-          v-for="(address, ind) in items"
-          :key="ind"
-          @click="chooseListElement(address)"
-        >
-          {{ getAddressLabel(address) }}
-        </li>
+        <div v-else>
+          <li
+            class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
+            v-for="(address, ind) in items"
+            :key="ind"
+            @click="chooseListElement(address)"
+          >
+            {{ getAddressLabel(address) }}
+          </li>
+        </div>
         <div v-if="showHistory">
+          <p class="caption ml-3 mt-3 text-xs font-semibold text-slate-400">
+            Historique
+          </p>
           <li
             v-for="addr in searchHistory"
             :key="addr.id"
