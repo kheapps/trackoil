@@ -35,6 +35,13 @@ const showHistory = computed(() => {
   return searchHistory.value.length > 0 && !isLoading.value;
 });
 
+const setDropdownFullSize = computed(() => {
+  return (
+    (showList.value && (!isListEmpty.value || showHistory.value)) ||
+    isLoading.value
+  );
+});
+
 let timeout: number;
 
 watch(searchValue, (search) => {
@@ -146,11 +153,12 @@ const isNoresult = computed(
     <div
       class="choices rounded-xl h-0 w-full mt-1 overflow-y-scroll text-slate-50 dark:text-slate-700 bg-slate-700 dark:bg-slate-50 transition-all absolute z-50 -t-10 shadow-md"
       :class="{
-        'h-48': showList,
+        'h-48': setDropdownFullSize,
         'h-fit': isListEmpty && showList,
       }"
     >
       <ul>
+        <p class="text-center m-1" v-if="isNoresult">Aucun résultat.</p>
         <div
           v-if="isLoading"
           class="w-full h-full flex justify-center items-center my-5"
@@ -159,15 +167,16 @@ const isNoresult = computed(
             class="loading-spinner border-teal-900/70 border-t-teal-500"
           ></div>
         </div>
-        <p class="text-center m-1" v-if="isNoresult">Aucun résultat.</p>
-        <li
-          class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
-          v-for="(address, ind) in items"
-          :key="ind"
-          @click="chooseListElement(address)"
-        >
-          {{ getAddressLabel(address) }}
-        </li>
+        <div v-else>
+          <li
+            class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
+            v-for="(address, ind) in items"
+            :key="ind"
+            @click="chooseListElement(address)"
+          >
+            {{ getAddressLabel(address) }}
+          </li>
+        </div>
         <div v-if="showHistory">
           <li
             v-for="addr in searchHistory"
