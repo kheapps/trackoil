@@ -11,20 +11,9 @@ import { useStationStore } from "@/stores/stations";
 const stationStore = useStationStore();
 const emit = defineEmits(["choose-address"]);
 
-const items = ref([] as Address[]);
-const isLoading = ref(false);
-const searchValue = ref("");
-const dropdownRef = ref();
 const input = ref();
-const showList = ref(false);
 
-const chosenItem = ref<Address | undefined>(undefined);
-
-const isListEmpty = computed(() => {
-  return items.value.length == 0;
-});
-
-const emptySearch = computed(() => searchValue.value === "");
+// ************* HISTORY *************
 
 const searchHistory = computed(() => {
   // return dummyHistory;
@@ -37,14 +26,24 @@ const showHistory = computed(() => {
   );
 });
 
-const setDropdownFullSize = computed(() => {
-  return (
-    (showList.value && (!isListEmpty.value || showHistory.value)) ||
-    isLoading.value
-  );
-});
+// **********************************
+// ************* SEARCH *************
+
+const searchValue = ref("");
 
 let timeout: number;
+
+const chosenItem = ref<Address | undefined>(undefined);
+
+const emptySearch = computed(() => searchValue.value === "");
+
+const isListEmpty = computed(() => {
+  return items.value.length == 0;
+});
+
+const isNoresult = computed(() => {
+  return isListEmpty.value && !isLoading.value && searchValue.value.length > 0;
+});
 
 watch(searchValue, (search) => {
   clearTimeout(timeout);
@@ -67,10 +66,12 @@ watch(searchValue, (search) => {
   }, 500);
 });
 
-function getAddressLabel(address: Address): string {
-  return address.label === address.ville
-    ? address.label + ", " + address.code_postal
-    : address.label;
+function clearSearch() {
+  searchValue.value = "";
+  chosenItem.value = undefined;
+  items.value = [];
+  toggleShowList(false);
+  emit("choose-address", undefined);
 }
 
 function chooseListElement(address: Address) {
@@ -90,18 +91,32 @@ function firstItem(): Address {
   return items.value[0] ?? null;
 }
 
+function getAddressLabel(address: Address): string {
+  return address.label === address.ville
+    ? address.label + ", " + address.code_postal
+    : address.label;
+}
+
+// ************************************
+// ************* DROPDOWN *************
+
+const items = ref([] as Address[]);
+
+const isLoading = ref(false);
+const dropdownRef = ref();
+const showList = ref(false);
+
 function toggleShowList(show: boolean) {
   if (!show) input.value.blur();
   showList.value = show;
 }
 
-function clearSearch() {
-  searchValue.value = "";
-  chosenItem.value = undefined;
-  items.value = [];
-  toggleShowList(false);
-  emit("choose-address", undefined);
-}
+const setDropdownFullSize = computed(() => {
+  return (
+    (showList.value && (!isListEmpty.value || showHistory.value)) ||
+    isLoading.value
+  );
+});
 
 onClickOutside(dropdownRef, () => {
   if (!showList.value || isLoading.value) return;
@@ -110,9 +125,7 @@ onClickOutside(dropdownRef, () => {
   toggleShowList(false);
 });
 
-const isNoresult = computed(() => {
-  return isListEmpty.value && !isLoading.value && searchValue.value.length > 0;
-});
+// ************************************
 </script>
 
 <template>
