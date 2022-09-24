@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 
 // import { dummyStations } from "@/assets/data";
 import { useStationStore } from "@/stores/stations";
+import { useCarburantStore } from "@/stores/carburant";
 
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
@@ -55,7 +56,11 @@ const noStationAvailable = computed(() => {
   return stations.value?.length === 0;
 });
 
+const carburantStore = useCarburantStore();
 const carburantFilter = ref("");
+carburantStore
+  .fetchCarburants()
+  .then(() => console.log("fetched carburants list", carburantStore.items));
 
 const filters = computed(() => {
   const filters = [] as string[];

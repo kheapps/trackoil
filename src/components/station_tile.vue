@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, toRefs, ref } from "vue";
 
+import { useCarburantStore } from "@/stores/carburant";
+
 import { MapPinIcon } from "@heroicons/vue/24/outline";
 
-import type { Station } from "@/custom_types";
+import type { Carburant, Station } from "@/custom_types";
 import { formatLastMajDate } from "@/utils";
 
 // onMounted(() => {
@@ -12,6 +14,8 @@ import { formatLastMajDate } from "@/utils";
 //     isSmallScreen.value = window.innerWidth < 768;
 //   });
 // });
+
+const carburantStore = useCarburantStore();
 
 const props = defineProps<{
   station: Station;
@@ -22,12 +26,25 @@ const props = defineProps<{
 const { station, selected, carburantFilter } = toRefs(props);
 
 const prices = computed(() => {
-  const filter = carburantFilter.value;
-  const carburants = [...station.value.carburants];
-  if (filter !== "")
-    return carburants.sort((a, b) =>
-      a.name === filter ? -1 : b.name === filter ? 1 : 0
-    );
+  // const filter = carburantFilter.value;
+  // const carburants = [...station.value.carburants];
+  // if (filter !== "")
+  //   return carburants.sort((a, b) =>
+  //     a.name === filter ? -1 : b.name === filter ? 1 : 0
+  //   );
+  const carburants = [] as Array<Carburant>;
+
+  for (const c of carburantStore.items) {
+    const carburant = station.value.carburants.find((elem) => {
+      console.log("comp name elem : ", elem.name, " c : ", c);
+      return elem.name === c;
+    });
+    console.log("found carburant : ", carburant);
+    const defCarburant = { name: c } as Carburant;
+    carburants.push(carburant ?? defCarburant);
+  }
+  console.log("carburants : ", carburants);
+
   return carburants;
 });
 
@@ -43,6 +60,10 @@ const isSmallScreen = ref(false);
 function isFilter(name: string): boolean {
   return name === carburantFilter.value || carburantFilter.value === "";
 }
+
+function disableCarburant(carburant: Carburant) {
+  return !isFilter(carburant.name) || !carburant.price;
+}
 </script>
 
 <template>
@@ -52,8 +73,8 @@ function isFilter(name: string): boolean {
     <div class="w-full flex flex-col md:flex-row justify-between items-center">
       <div class="prices flex justify-center items-center">
         <div
-          class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3"
-          :class="{ 'opacity-50': !isFilter(carburant.name) }"
+          class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3 grow"
+          :class="{ 'opacity-50': disableCarburant(carburant) }"
           v-for="carburant in prices"
           :key="carburant.name"
         >
@@ -91,7 +112,7 @@ function isFilter(name: string): boolean {
     <Transition name="fade-delayed">
       <p
         v-if="selected || !isSmallScreen"
-        class="caption my-1 text-xs w-full text-center text-slate-50/50"
+        class="caption mt-3 md:pr-3 text-xs w-full text-right text-slate-50/50"
       >
         Dernière mise à jour le {{ dateMaj }}.
       </p>
