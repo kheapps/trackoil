@@ -86,37 +86,46 @@ function disableCarburant(carburant: Carburant) {
       </div>
 
       <Transition name="fade">
-        <a
-          v-if="selected || !isSmallScreen"
-          class="go-to-btn w-full md:w-72 md:px-7 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl bg-teal-500 dark:bg-teal-700/70 dark:shadow-xl text-slate-100 box-border"
-          :href="
-            'http://www.google.com/maps/place/' +
-            station.position.lat +
-            ',' +
-            station.position.long
-          "
-          target="_blank"
-        >
-          <span class="w-7 h-7 shrink-0 mr-3">
-            <MapPinIcon></MapPinIcon>
-          </span>
-          <div class="flex flex-col justify-center items-start overflow-hidden">
-            <p class="w-full text-left truncate">
-              {{ station.address }}
-            </p>
-            <p class="w-full text-left">{{ station.ville }}</p>
+        <div class="">
+          <div
+            v-if="selected || !isSmallScreen"
+            class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl text-slate-100 box-border"
+          >
+            <a
+              class="flex"
+              :href="
+                'http://www.google.com/maps/place/' +
+                station.position.lat +
+                ',' +
+                station.position.long
+              "
+              target="_blank"
+            >
+              <span class="p-5 shrink-0 mr-3 bg-slate-200/30 rounded-xl">
+                <MapPinIcon class="w-7 h-7"></MapPinIcon>
+              </span>
+            </a>
+            <div
+              class="flex flex-col justify-center items-start overflow-hidden"
+            >
+              <p
+                class="w-full text-left truncate"
+                :title="station.address + ', ' + station.ville"
+              >
+                {{ station.address }}
+              </p>
+              <p class="w-full text-left">{{ station.ville }}</p>
+            </div>
           </div>
-        </a>
+          <p
+            v-if="selected || !isSmallScreen"
+            class="caption mt-3 md:pl-3 text-xs w-full text-left text-slate-50/50"
+          >
+            Dernière mise à jour le {{ dateMaj }}.
+          </p>
+        </div>
       </Transition>
     </div>
-    <Transition name="fade-delayed">
-      <p
-        v-if="selected || !isSmallScreen"
-        class="caption mt-3 md:pr-3 text-xs w-full text-right text-slate-50/50"
-      >
-        Dernière mise à jour le {{ dateMaj }}.
-      </p>
-    </Transition>
   </div>
 </template>
 
