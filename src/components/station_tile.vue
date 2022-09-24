@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from "vue";
+import { computed, toRefs } from "vue";
 
 import { useCarburantStore } from "@/stores/carburant";
 
@@ -8,22 +8,14 @@ import { MapPinIcon } from "@heroicons/vue/24/outline";
 import type { Carburant, Station } from "@/custom_types";
 import { formatLastMajDate } from "@/utils";
 
-// onMounted(() => {
-//   window.addEventListener("resize", () => {
-//     // console.log("resized screen");
-//     isSmallScreen.value = window.innerWidth < 768;
-//   });
-// });
-
 const carburantStore = useCarburantStore();
 
 const props = defineProps<{
   station: Station;
   carburantFilter: string;
-  selected: boolean;
 }>();
 
-const { station, selected, carburantFilter } = toRefs(props);
+const { station, carburantFilter } = toRefs(props);
 
 const prices = computed(() => {
   // const filter = carburantFilter.value;
@@ -55,8 +47,6 @@ const dateMaj = computed(() => {
 // const isFirst = (index: number) => index == 0;
 // const isLast = (index: number) => index == carburants.value.length - 1;$
 
-const isSmallScreen = ref(false);
-
 function isFilter(name: string): boolean {
   return name === carburantFilter.value || carburantFilter.value === "";
 }
@@ -68,9 +58,11 @@ function disableCarburant(carburant: Carburant) {
 
 <template>
   <div
-    class="list-tile w-full text-slate-900 dark:text-slate-300 py-3 my-3 px-2 md:px-3 flex flex-col justify-center items-start rounded-2xl bg-teal-100/50 shadow-md dark:shadow-none dark:bg-teal-900/30"
+    class="list-tile w-full text-slate-900 dark:text-slate-300 py-3 my-3 md:px-3 flex flex-col justify-center items-start rounded-2xl bg-teal-100/50 shadow-md dark:shadow-none dark:bg-teal-900/30"
   >
-    <div class="w-full flex flex-col md:flex-row justify-between items-center">
+    <div
+      class="w-full max-w-full flex flex-col md:flex-row justify-between items-center"
+    >
       <div class="prices flex justify-center items-center">
         <div
           class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3 grow"
@@ -85,46 +77,40 @@ function disableCarburant(carburant: Carburant) {
         </div>
       </div>
 
-      <Transition name="fade">
-        <div class="">
-          <div
-            v-if="selected || !isSmallScreen"
-            class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl text-slate-100 box-border"
+      <div class="flex flex-col w-full my-3 px-5 md:px-0">
+        <div
+          class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl text-slate-100"
+        >
+          <a
+            class="flex w-fit"
+            :href="
+              'http://www.google.com/maps/place/' +
+              station.position.lat +
+              ',' +
+              station.position.long
+            "
+            target="_blank"
           >
-            <a
-              class="flex"
-              :href="
-                'http://www.google.com/maps/place/' +
-                station.position.lat +
-                ',' +
-                station.position.long
-              "
-              target="_blank"
+            <span class="p-3 md:p-5 shrink-0 mr-3 bg-slate-200/30 rounded-xl">
+              <MapPinIcon class="w-7 h-7"></MapPinIcon>
+            </span>
+          </a>
+          <div class="grow verflow-hidden text-sm md:text-base overflow-hidden">
+            <p
+              class="w-full text-left truncate"
+              :title="station.address + ', ' + station.ville"
             >
-              <span class="p-5 shrink-0 mr-3 bg-slate-200/30 rounded-xl">
-                <MapPinIcon class="w-7 h-7"></MapPinIcon>
-              </span>
-            </a>
-            <div
-              class="flex flex-col justify-center items-start overflow-hidden"
-            >
-              <p
-                class="w-full text-left truncate"
-                :title="station.address + ', ' + station.ville"
-              >
-                {{ station.address }}
-              </p>
-              <p class="w-full text-left">{{ station.ville }}</p>
-            </div>
+              {{ station.address }}
+            </p>
+            <p class="w-full text-left">{{ station.ville }}</p>
           </div>
-          <p
-            v-if="selected || !isSmallScreen"
-            class="caption mt-3 md:pl-3 text-xs w-full text-left text-slate-50/50"
-          >
-            Dernière mise à jour le {{ dateMaj }}.
-          </p>
         </div>
-      </Transition>
+        <p
+          class="caption mt-3 md:pl-3 text-xs w-full text-center md:text-left text-slate-50/50"
+        >
+          Dernière mise à jour le {{ dateMaj }}.
+        </p>
+      </div>
     </div>
   </div>
 </template>

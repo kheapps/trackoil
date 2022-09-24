@@ -79,9 +79,9 @@ function setCarburantFilter(carburant: string) {
 </script>
 
 <template>
-  <div class="home w-full flex flex-col justify-center items-center">
+  <div class="home w-full flex flex-col justify-center items-center px-5">
     <div
-      class="w-full flex flex-col md:flex-row md:max-w-7xl justify-evenly py-10 px-7 md:px-32"
+      class="w-full flex flex-col md:flex-row md:max-w-7xl justify-evenly py-10 md:px-32"
     >
       <SearchAddress
         class="w-full md:w-[35%]"
@@ -93,23 +93,19 @@ function setCarburantFilter(carburant: string) {
         :items="filters"
       />
     </div>
-    <div
-      class="w-full max-w-full px-5 flex flex-col justify-center items-center"
-    >
+    <div class="w-full max-w-full flex flex-col justify-center items-center">
       <p v-if="noStationAvailable">
         Veuillez saisir une adresse ou une ville pour voir les prix des stations
         à proximité.
       </p>
       <p v-if="noResultFromApi">Aucun résultat.</p>
-      <div v-else class="result-list w-full max-w-full flex justify-center">
-        <div class="w-fit flex flex-col justify-center items-center">
+      <div v-else class="result-list flex justify-center w-full md:w-fit">
+        <div class="w-full flex flex-col justify-center items-center">
           <StationTile
-            class="flex-grow"
             v-for="(station, ind) in stations"
             :key="station.id + ' - ' + ind"
             :station="station"
             :carburant-filter="carburantFilter"
-            selected
           />
         </div>
       </div>
