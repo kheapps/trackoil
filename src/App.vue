@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { ChartBarIcon } from "@heroicons/vue/24/outline";
+// import { ChartBarIcon } from "@heroicons/vue/24/outline";
 
 // const dataSource =
 //   "https://data.economie.gouv.fr/explore/dataset/prix-carburants-fichier-instantane-test-ods-copie/information/";
@@ -9,12 +9,12 @@ import { ChartBarIcon } from "@heroicons/vue/24/outline";
 <template>
   <header class="relative flex justify-center items-center py-7 mb-10">
     <h1 class="text-lg md:text-2xl font-bold">Prix des carburants</h1>
-    <button
+    <!-- <button
       class="absolute right-3 bg-teal-500 dark:bg-teal-800 px-5 py-2 rounded-full text-slate-100 text-sm md:text-base flex justify-center items-center"
     >
       <ChartBarIcon class="h-5" />
       <p class="ml-3 hidden md:block">Suivis</p>
-    </button>
+    </button> -->
   </header>
 
   <main class="grow">

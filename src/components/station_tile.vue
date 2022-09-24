@@ -39,6 +39,10 @@ const dateMaj = computed(() => {
 // const isLast = (index: number) => index == carburants.value.length - 1;$
 
 const isSmallScreen = ref(false);
+
+function isFilter(name: string): boolean {
+  return name === carburantFilter.value || carburantFilter.value === "";
+}
 </script>
 
 <template>
@@ -49,6 +53,7 @@ const isSmallScreen = ref(false);
       <div class="prices flex justify-center items-center">
         <div
           class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3"
+          :class="{ 'opacity-50': !isFilter(carburant.name) }"
           v-for="carburant in prices"
           :key="carburant.name"
         >
@@ -62,7 +67,7 @@ const isSmallScreen = ref(false);
       <Transition name="fade">
         <a
           v-if="selected || !isSmallScreen"
-          class="go-to-btn w-full md:w-fit px-3 md:px-7 mt-3 md:mt-0 md:mx-3 py-3 flex justify-center items-center rounded-xl bg-teal-500 dark:bg-teal-700/70 dark:shadow-xl text-slate-100"
+          class="go-to-btn w-full md:w-72 md:px-7 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl bg-teal-500 dark:bg-teal-700/70 dark:shadow-xl text-slate-100 box-border"
           :href="
             'http://www.google.com/maps/place/' +
             station.position.lat +
@@ -71,10 +76,15 @@ const isSmallScreen = ref(false);
           "
           target="_blank"
         >
-          <span class="w-7 h-7">
+          <span class="w-7 h-7 shrink-0 mr-3">
             <MapPinIcon></MapPinIcon>
           </span>
-          <h1 class="text-center ml-3">Voir sur la carte</h1>
+          <div class="flex flex-col justify-center items-start overflow-hidden">
+            <p class="w-full text-left truncate">
+              {{ station.address }}
+            </p>
+            <p class="w-full text-left">{{ station.ville }}</p>
+          </div>
         </a>
       </Transition>
     </div>
