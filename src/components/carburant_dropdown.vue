@@ -63,7 +63,7 @@ const noFilterAvailable = computed(() => items.value.length === 0);
       <label class="w-full relative" for="filterCarburant">
         <span class="ml-2"> Filtrer par carburant </span>
         <input
-          class="w-full h-9 text-slate-800 dark:text-slate-50 mt-1 pl-3 pr-10 py-2 disable:bg-white disabled:dark:bg-slate-700 placeholder-slate-400 disabled:bg-white disabled:text-slate-800 block rounded-xl sm:text-sm invalid:border-red-500 invalid:text-red-600 disabled:shadow-none border-[1px] border-emerald-900/50 dark:border-none focus:outline-none focus:border-teal-700 focus:ring-1 focus:ring-teal-700/30 transition-all duration-50 z-10"
+          class="w-full h-9 mt-1 pl-3 pr-10 py-2 disable:bg-white disabled:dark:bg-slate-700 placeholder-slate-400 disabled:bg-white disabled:text-slate-800 disabled:dark:text-slate-50 block rounded-xl sm:text-sm invalid:border-red-500 invalid:text-red-600 disabled:shadow-none border-[1px] border-emerald-900/50 dark:border-none focus:outline-none focus:border-teal-700 focus:ring-1 focus:ring-teal-700/30 transition-all duration-50 z-10"
           id="filterCarburant"
           type="text"
           placeholder="Carburant"
