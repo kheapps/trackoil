@@ -58,12 +58,12 @@ function disableCarburant(carburant: Carburant) {
 
 <template>
   <div
-    class="list-tile w-full text-slate-900 dark:text-slate-300 py-3 my-3 md:px-3 flex flex-col justify-center items-start rounded-2xl bg-teal-100/50 shadow-md dark:shadow-none dark:bg-teal-900/30"
+    class="list-tile w-full text-slate-900 dark:text-slate-300 py-3 md:px-3 flex flex-col justify-center items-start border-b-[1px] border-slate-900/20 dark:border-slate-100/20"
   >
     <div
-      class="w-full max-w-full flex flex-col md:flex-row justify-between items-center"
+      class="w-full max-w-full flex flex-col md:flex-row justify-between items-center md:items-start"
     >
-      <div class="prices flex justify-center items-center">
+      <div class="prices flex justify-center items-center mt-3">
         <div
           class="flex flex-1 flex-col justify-start items-center p-2 md:py-3 md:mx-3 grow"
           :class="{ 'opacity-50': disableCarburant(carburant) }"
@@ -77,21 +77,19 @@ function disableCarburant(carburant: Carburant) {
         </div>
       </div>
 
-      <div class="flex flex-col w-full my-3 px-5 md:px-0">
-        <div
-          class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-3 flex justify-start items-center rounded-xl text-slate-100"
+      <div class="flex flex-col w-full py-3 px-5 md:px-0">
+        <a
+          class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-1 pr-3 flex justify-start items-center rounded-xl text-slate-100 bg-slate-200/30"
+          :href="
+            'http://www.google.com/maps/place/' +
+            station.position.lat +
+            ',' +
+            station.position.long
+          "
+          target="_blank"
         >
-          <a
-            class="flex w-fit"
-            :href="
-              'http://www.google.com/maps/place/' +
-              station.position.lat +
-              ',' +
-              station.position.long
-            "
-            target="_blank"
-          >
-            <span class="p-3 md:p-5 shrink-0 mr-3 bg-slate-200/30 rounded-xl">
+          <a class="flex w-fit">
+            <span class="p-3 md:p-5 shrink-0">
               <MapPinIcon class="w-7 h-7"></MapPinIcon>
             </span>
           </a>
@@ -104,10 +102,8 @@ function disableCarburant(carburant: Carburant) {
             </p>
             <p class="w-full text-left">{{ station.ville }}</p>
           </div>
-        </div>
-        <p
-          class="caption mt-3 md:pl-3 text-xs w-full text-center md:text-left text-slate-50/50"
-        >
+        </a>
+        <p class="caption mt-2 w-full text-center text-slate-50/50">
           Dernière mise à jour le {{ dateMaj }}.
         </p>
       </div>
@@ -116,6 +112,10 @@ function disableCarburant(carburant: Carburant) {
 </template>
 
 <style scoped>
+.caption {
+  font-size: 0.7rem;
+}
+
 .fade-enter-from,
 .fade-delayed-enter-from {
   opacity: 0;

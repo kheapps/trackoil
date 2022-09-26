@@ -24,7 +24,7 @@ import { RouterView } from "vue-router";
   <footer
     class="flex flex-col justify-center items-center mt-3 py-9 text-sm md:text-base"
   >
-    <a
+    <!-- <a
       class="flex justify-center items-center"
       href="https://github.com/kheapps/trackoil"
       target="_blank"
@@ -42,7 +42,7 @@ import { RouterView } from "vue-router";
         />
       </svg>
       <p class="ml-3">Voir le code source</p>
-    </a>
+    </a> -->
     <p>
       Données issues de cette
       <a

@@ -7,6 +7,7 @@ import { coordinatesToString } from "@/utils";
 export const useStationStore = defineStore("stations", {
   state: () => ({
     items: [] as StationGroup[],
+    dataLoading: false,
   }),
   getters: {
     getGroupById(state) {
@@ -24,6 +25,7 @@ export const useStationStore = defineStore("stations", {
   },
   actions: {
     async fetchGeofilter(address: Address): Promise<boolean> {
+      this.dataLoading = true;
       const [lat, long] = coordinatesToString(address.coordinates).split(",");
       // console.log("coordinates lat : ", lat, "  long : ", long);
       const url =
@@ -62,6 +64,7 @@ export const useStationStore = defineStore("stations", {
           }
         }
       }
+      this.dataLoading = false;
       // console.log("items station store updated last added group ", this.items);
       // window.localStorage.setItem(
       //   "data-station",
