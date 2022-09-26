@@ -79,7 +79,7 @@ function disableCarburant(carburant: Carburant) {
 
       <div class="flex flex-col w-full py-3 px-5 md:px-0">
         <a
-          class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-1 pr-3 flex justify-start items-center rounded-xl text-slate-100 bg-slate-200/30"
+          class="w-full md:w-72 mt-3 md:mt-0 md:mx-3 py-1 pr-3 flex justify-start items-center rounded-xl text-slate-900 dark:text-slate-100 bg-slate-900/30 dark:bg-slate-200/30"
           :href="
             'http://www.google.com/maps/place/' +
             station.position.lat +
@@ -103,7 +103,9 @@ function disableCarburant(carburant: Carburant) {
             <p class="w-full text-left">{{ station.ville }}</p>
           </div>
         </a>
-        <p class="caption mt-2 w-full text-center text-slate-50/50">
+        <p
+          class="caption mt-2 w-full text-center text-slate-900/50 dark:text-slate-50/50"
+        >
           Dernière mise à jour le {{ dateMaj }}.
         </p>
       </div>
