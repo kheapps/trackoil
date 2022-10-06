@@ -86,4 +86,23 @@ import { RouterView } from "vue-router";
     -webkit-transform: rotate(360deg);
   }
 }
+
+.list-item-enter-active,
+.list-item-leave-active,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-item-enter-from,
+.list-item-leave-to,
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.list-item-leave-active {
+  position: absolute;
+}
 </style>
