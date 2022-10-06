@@ -182,9 +182,9 @@ onClickOutside(dropdownRef, () => {
             class="loading-spinner border-teal-900/70 border-t-teal-500"
           ></div>
         </div>
-        <div v-else>
+        <div>
           <li
-            class="rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
+            class="list-item rounded-xl m-1 p-2 hover:bg-emerald-300/[.3] hover:cursor-pointer"
             v-for="(address, ind) in items"
             :key="ind"
             @click="chooseListElement(address)"
@@ -217,5 +217,20 @@ onClickOutside(dropdownRef, () => {
 .choices {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.list-item {
+  animation: appear 0.5s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
 }
 </style>

@@ -7,7 +7,7 @@ import { useCarburantStore } from "@/stores/carburant";
 
 import SearchAddress from "@/components/search_address.vue";
 import StationTile from "@/components/station_tile.vue";
-import CarburantDropdown from "@/components/carburant_dropdown.vue";
+import CarburantDropdown from "@/components/carburant_filter.vue";
 import type { Address, Carburant, Station } from "@/custom_types";
 
 const stationStore = useStationStore();
@@ -121,17 +121,21 @@ function hasPrices(station: Station): boolean {
         v-else
         class="result-list flex flex-col justify-center w-full md:w-fit"
       >
-        <div
-          class="w-full"
-          v-for="(station, ind) in stations"
-          :key="station.id + ' - ' + ind"
-        >
-          <StationTile
-            v-if="hasPrices(station)"
-            :station="station"
-            :carburant-filter="carburantFilter"
-          />
-        </div>
+        <TransitionGroup name="list">
+          <div
+            class="w-full"
+            v-for="(station, ind) in stations"
+            :key="station.id + ' - ' + ind"
+          >
+            <Transition name="list-item">
+              <StationTile
+                v-if="hasPrices(station)"
+                :station="station"
+                :carburant-filter="carburantFilter"
+              />
+            </Transition>
+          </div>
+        </TransitionGroup>
       </div>
     </div>
   </div>
