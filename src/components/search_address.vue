@@ -47,11 +47,12 @@ const isNoresult = computed(() => {
 
 watch(searchValue, (search) => {
   clearTimeout(timeout);
+  items.value = [];
   if (search === "") {
-    items.value = [];
     isLoading.value = false;
     return;
   }
+  if (searchValue.value.length < 3) return;
   // if (chosenItem.value) return;
   isLoading.value = true;
 
