@@ -52,7 +52,7 @@ watch(searchValue, (search) => {
     isLoading.value = false;
     return;
   }
-  if (chosenItem.value) return;
+  // if (chosenItem.value) return;
   isLoading.value = true;
 
   timeout = setTimeout(function () {

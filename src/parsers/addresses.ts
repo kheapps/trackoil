@@ -2,22 +2,41 @@ import type { ApiAddressResponse, Address } from "@/custom_types";
 
 import axios from "axios";
 
+const controller = new AbortController();
+// let isRequestRunning = false;
+
 export async function searchAddresses(search: string): Promise<Address[]> {
-  const data = (
-    await axios.get(
-      "https://api-adresse.data.gouv.fr/search/?q=" + search + "&limit=25"
-    )
-  ).data;
+  // if (isRequestRunning) {
+  //   try {
+  //     controller.abort();
+  //   } catch (err) {
+  //     console.log("axios abort error");
+  //   }
+  //   isRequestRunning = false;
+  // }
+  // isRequestRunning = true;
+  let data = {} as ApiAddressResponse;
+  try {
+    data = (
+      await axios.get(
+        "https://api-adresse.data.gouv.fr/search/?q=" + search + "&limit=25",
+        { signal: controller.signal }
+      )
+    ).data;
+  } catch (err) {
+    console.log("error", err);
+  }
+  // isRequestRunning = false;
   return parseAddressesSuggestions(data);
 }
 
 function parseAddressesSuggestions(data: ApiAddressResponse): Address[] {
   const addresses = [] as Address[];
   // console.log("Parsing addresses data ", data);
-  const features = data.features;
+  // const features = data.features;
   // console.log("features data received ", features);
 
-  features.forEach((f) => {
+  data.features.forEach((f) => {
     const a = {} as Address;
 
     a.id = f.properties.id;
